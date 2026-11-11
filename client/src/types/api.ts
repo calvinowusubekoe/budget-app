@@ -12,6 +12,8 @@ export interface User {
   lastWorkspaceId: string | null;
   onboardingCompleted: boolean;
   marketingConsent: boolean;
+  /** Can read tester feedback (ADMIN_EMAILS on the server). */
+  isAdmin?: boolean;
   createdAt: string;
 }
 
@@ -69,6 +71,9 @@ export interface AuditEntry {
 export interface Meta {
   currencies: { featured: string[]; all: string[] };
   legal: { termsVersion: string; privacyVersion: string };
+  /** 'test' for a tester build: shows a banner and may offer a shared demo account. */
+  stage?: 'live' | 'test';
+  demo?: { email: string; password: string } | null;
 }
 
 export interface AuthResult {

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { env } from '../../config/env.js';
 
 const consentSchema = new mongoose.Schema(
   {
@@ -43,6 +44,7 @@ userSchema.methods.toPublic = function toPublic() {
     lastWorkspaceId: this.lastWorkspaceId?.toString() ?? null,
     onboardingCompleted: Boolean(this.onboardingCompletedAt),
     marketingConsent: latestConsent(this.consents, 'marketing'),
+    isAdmin: env.adminEmails.includes(String(this.email).toLowerCase()),
     createdAt: this.createdAt,
   };
 };

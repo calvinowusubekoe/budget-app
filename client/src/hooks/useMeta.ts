@@ -5,6 +5,8 @@ import type { Meta } from '@/types/api';
 const FALLBACK: Meta = {
   currencies: { featured: ['GHS', 'USD', 'EUR', 'GBP', 'NGN', 'CAD'], all: ['GHS', 'USD', 'EUR', 'GBP', 'NGN', 'CAD'] },
   legal: { termsVersion: '', privacyVersion: '' },
+  stage: 'live',
+  demo: null,
 };
 
 export function useMeta() {

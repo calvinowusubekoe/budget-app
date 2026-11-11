@@ -10,11 +10,13 @@ import { Alert } from '@/components/ui/feedback';
 import { safeNext } from '@/app/guards';
 import { loginSchema, type LoginValues } from './schemas';
 import { useLogin } from './useAuthActions';
+import { useMeta } from '@/hooks/useMeta';
 
 export function LoginPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const login = useLogin();
+  const { demo } = useMeta();
   const { register, handleSubmit, formState } = useForm<LoginValues>({ resolver: zodResolver(loginSchema) });
 
   const onSubmit = handleSubmit((values) =>
@@ -50,6 +52,14 @@ export function LoginPage() {
         <Button type="submit" size="lg" loading={login.isPending}>
           Sign in
         </Button>
+        {demo && (
+          <div className="grid gap-2 border-t border-[var(--line)] pt-4 text-center text-sm">
+            <p className="text-muted">Testing Kontaa? Explore a demo account with sample data.</p>
+            <Button type="button" variant="neu" loading={login.isPending && login.variables?.email === demo.email} onClick={() => login.mutate(demo, { onSuccess: () => navigate(safeNext(params.get('next')), { replace: true }) })}>
+              Use the demo account
+            </Button>
+          </div>
+        )}
       </form>
     </AuthLayout>
   );

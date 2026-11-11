@@ -1,0 +1,49 @@
+# Render blueprint for the Kontaa API (test build). In Render: New > Blueprint > pick this repo.
+# Values marked sync: false are asked for when you create it; never commit them.
+services:
+  - type: web
+    name: kontaa-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: APP_STAGE
+        value: test
+      - key: MONGODB_URI
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      # Netlify's proxy and Render's load balancer sit in front of the API.
+      - key: TRUST_PROXY
+        value: "2"
+      # Render's free disk is wiped on restart, so uploads are stored in MongoDB.
+      - key: UPLOAD_STORAGE
+        value: mongodb
+      - key: API_DOCS
+        value: "false"
+      - key: AI_PROVIDER
+        value: anthropic
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      # Small AI allowances while testing (each use costs money).
+      - key: PLAN_LIMITS
+        value: '{"free":{"aiQuestionsPerMonth":30,"receiptScansPerMonth":15}}'
+      - key: PLAN_PRICES
+        value: personal_pro.monthly=25.00,personal_pro.yearly=250.00,business_pro.monthly=75.00,business_pro.yearly=750.00
+      - key: DEMO_EMAIL
+        value: demo@kontaa.app
+      - key: DEMO_PASSWORD
+        sync: false
+      - key: ADMIN_EMAILS
+        sync: false

@@ -21,6 +21,7 @@ import { groupsRouter, susuInvitationsRouter } from '../modules/susu/groups.rout
 import { businessRouter } from '../modules/business/business.routes.js';
 import { subscriptionsRouter } from '../modules/subscriptions/subscriptions.routes.js';
 import { aiRouter } from '../modules/ai/ai.routes.js';
+import { feedbackRouter } from '../modules/feedback/feedback.routes.js';
 
 export const apiRouter = Router();
 
@@ -29,6 +30,9 @@ apiRouter.get('/meta', (_req, res) =>
   ok(res, {
     currencies: { featured: FEATURED_CURRENCIES, all: CURRENCY_CODES },
     legal: env.legal,
+    // Test builds show a banner and may offer a shared demo account.
+    stage: env.stage,
+    demo: env.demo,
   }),
 );
 
@@ -57,3 +61,5 @@ apiRouter.use('/business', businessRouter);
 apiRouter.use('/subscriptions', subscriptionsRouter);
 // Optional, read-only AI assistant over deterministic figures.
 apiRouter.use('/ai', aiRouter);
+// Tester feedback; admins (ADMIN_EMAILS) read it.
+apiRouter.use('/feedback', feedbackRouter);

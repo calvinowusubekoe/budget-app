@@ -48,6 +48,8 @@ const schema = Joi.object({
   MAIL_FROM: Joi.string().default('Kontaa <no-reply@kontaa.local>'),
 
   EXCHANGE_RATE_PROVIDER: Joi.string().valid('none', 'open_er_api').default('none'),
+  // disk: files under UPLOAD_DIR. mongodb: files stored in the database (for hosts without persistent disks).
+  UPLOAD_STORAGE: Joi.string().valid('disk', 'mongodb').default('disk'),
   UPLOAD_DIR: Joi.string().default('uploads'),
   MAX_UPLOAD_MB: Joi.number().min(1).max(25).default(5),
 
@@ -68,6 +70,14 @@ const schema = Joi.object({
   AI_MODEL: Joi.string().default('claude-opus-5-5'),
   AI_EFFORT: Joi.string().valid('low', 'medium', 'high').default('medium'),
   AI_TIMEOUT_MS: Joi.number().integer().min(5000).max(300000).default(90000),
+
+  // "test" marks a tester build: a banner in the app, optional demo sign-in, and email may be log-only.
+  APP_STAGE: Joi.string().valid('live', 'test').default('live'),
+  // Demo account offered on the sign-in page when APP_STAGE=test (created by npm run seed:demo).
+  DEMO_EMAIL: Joi.string().allow('').default(''),
+  DEMO_PASSWORD: Joi.string().allow('').default(''),
+  // People who can read tester feedback at /admin/feedback.
+  ADMIN_EMAILS: Joi.string().allow('').default(''),
 
   // Interactive API docs at /api/docs. On by default outside production.
   API_DOCS: Joi.boolean().default(Joi.ref('$notProd')),
@@ -124,6 +134,9 @@ export const env = Object.freeze({
   },
   mailFrom: value.MAIL_FROM,
   apiDocs: value.API_DOCS,
+  stage: value.APP_STAGE,
+  demo: value.APP_STAGE === 'test' && value.DEMO_EMAIL && value.DEMO_PASSWORD ? { email: value.DEMO_EMAIL.toLowerCase(), password: value.DEMO_PASSWORD } : null,
+  adminEmails: value.ADMIN_EMAILS.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean),
   legal: { termsVersion: value.TERMS_VERSION, privacyVersion: value.PRIVACY_VERSION },
   exchangeRateProvider: value.EXCHANGE_RATE_PROVIDER,
   payments: {
@@ -146,5 +159,5 @@ export const env = Object.freeze({
     effort: value.AI_EFFORT,
     timeoutMs: value.AI_TIMEOUT_MS,
   },
-  uploads: { dir: value.UPLOAD_DIR, maxBytes: Math.round(value.MAX_UPLOAD_MB * 1024 * 1024) },
+  uploads: { storage: value.UPLOAD_STORAGE, dir: value.UPLOAD_DIR, maxBytes: Math.round(value.MAX_UPLOAD_MB * 1024 * 1024) },
 });

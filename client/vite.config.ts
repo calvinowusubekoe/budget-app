@@ -65,7 +65,7 @@ export default defineConfig({
   server: {
     port: 5173,
     // Same-origin in development so the SameSite=Strict refresh cookie works.
-    proxy: { '/api': { target: 'http://localhost:4000', changeOrigin: false } },
+    proxy: { '/api': { target: process.env.KONTAA_API_PROXY ?? 'http://localhost:4000', changeOrigin: false } },
   },
   test: {
     environment: 'jsdom',

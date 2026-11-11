@@ -9,3 +9,6 @@ coverage/
 uploads/
 .playwright-mcp/
 server/tests/.uploads/
+
+# Generated for Netlify at build time
+client/public/_redirects

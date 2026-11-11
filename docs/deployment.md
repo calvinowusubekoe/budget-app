@@ -6,6 +6,8 @@ Kontaa is two parts:
 
 Serve both from **one HTTPS origin**, with the API under `/api`. The refresh cookie is `SameSite=Strict` and scoped to `/api/auth`, so a separate API domain would break sign-in.
 
+For a free **test build** for testers (Netlify for the app, Render for the API, MongoDB Atlas for the database), follow [hosting-test-build.md](hosting-test-build.md) instead. This guide is for a live launch.
+
 ## 1. Requirements
 
 - **Node.js 20 or later.**

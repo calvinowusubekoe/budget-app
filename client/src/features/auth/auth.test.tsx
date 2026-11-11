@@ -61,8 +61,11 @@ describe('RegisterPage', () => {
 
 describe('LoginPage', () => {
   it('shows the server message on bad credentials and keeps the user signed out', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      jsonResponse({ success: false, error: { code: 'UNAUTHORIZED', message: 'Email or password is incorrect.' } }, 401),
+    // A fresh response per request: the sign-in page also asks for /api/meta.
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) =>
+      String(input) === '/api/meta'
+        ? jsonResponse({ success: true, data: { currencies: { featured: ['GHS'], all: ['GHS'] }, legal: { termsVersion: 'x', privacyVersion: 'y' }, stage: 'live', demo: null } })
+        : jsonResponse({ success: false, error: { code: 'UNAUTHORIZED', message: 'Email or password is incorrect.' } }, 401),
     );
     renderWithProviders(<LoginPage />);
     const user = userEvent.setup();

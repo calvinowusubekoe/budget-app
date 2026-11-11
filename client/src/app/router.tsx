@@ -12,6 +12,7 @@ import { AcceptInvitationPage } from '@/features/workspaces/AcceptInvitationPage
 import { AcceptGroupInvitationPage } from '@/features/susu/AcceptGroupInvitationPage';
 import { BusinessOnly } from '@/features/business/BusinessOnly';
 import { GuestOnly, RequireAuth } from './guards';
+import { GuidePage } from '@/features/feedback/GuidePage';
 
 /**
  * Pages inside the app load on demand, so the first screen downloads less.
@@ -42,6 +43,7 @@ const BusinessReportsPage = lazyPage(() => import('@/features/business/BusinessP
 const DocumentsPage = lazyPage(() => import('@/features/business/DocumentsPage'), 'DocumentsPage');
 const DocumentPage = lazyPage(() => import('@/features/business/DocumentPage'), 'DocumentPage');
 const ContactsPage = lazyPage(() => import('@/features/business/ContactsPage'), 'ContactsPage');
+const FeedbackAdminPage = lazyPage(() => import('@/features/feedback/FeedbackAdminPage'), 'FeedbackAdminPage');
 const ReportsPage = lazyPage(() => import('@/features/reports/ReportsPage'), 'ReportsPage');
 const AssistantPage = lazyPage(() => import('@/features/assistant/AssistantPage'), 'AssistantPage');
 
@@ -68,6 +70,8 @@ export const router = createBrowserRouter([
   { path: '/reset-password', element: <ResetPasswordPage /> },
   { path: '/verify-email', element: <VerifyEmailPage /> },
   { path: '/legal/:doc', element: <LegalPage /> },
+  // For testers; readable before signing in.
+  { path: '/guide', element: <GuidePage /> },
   {
     element: <RequireAuth allowOnboarding />,
     children: [
@@ -84,6 +88,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, path: '/', element: <DashboardPage /> },
           { path: '/settings', element: <SettingsPage /> },
+          { path: '/admin/feedback', element: <FeedbackAdminPage /> },
           { path: '/settings/workspace', element: <WorkspaceSettingsPage /> },
           { path: '/settings/categories', element: <CategoriesPage /> },
           { path: '/settings/exchange-rates', element: <ExchangeRatesPage /> },

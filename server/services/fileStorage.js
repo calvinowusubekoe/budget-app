@@ -3,14 +3,22 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { env } from '../config/env.js';
+import mongoose from 'mongoose';
 import { ApiError } from '../utils/ApiError.js';
 
 /**
  * Local-disk storage for user uploads (receipts, Susu proof). Files live under
  * UPLOAD_DIR/<workspaceId>/ with random names and are only ever served through
- * authenticated, workspace-checked endpoints. Swap this module for object
- * storage in production; callers only use the functions below.
+ * authenticated, workspace-checked endpoints.
+ *
+ * With UPLOAD_STORAGE=mongodb, files are stored in the database instead
+ * (keys start with "db:"), for hosts whose disks don't survive a restart.
+ * Either kind of key can always be read, so switching modes keeps old files.
+ * Callers only use the functions below.
  */
+
+const StoredFile = mongoose.models.StoredFile ?? mongoose.model('StoredFile', new mongoose.Schema({ owner: { type: String, required: true, index: true }, data: { type: Buffer, required: true } }, { timestamps: { createdAt: true, updatedAt: false } }));
+const DB_PREFIX = 'db:';
 const serverRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uploadRoot = () => path.resolve(serverRoot, env.uploads.dir);
 
@@ -32,14 +40,20 @@ export function cleanName(name) {
 }
 
 /** Validates and stores an uploaded file. Returns metadata to save on the owning record. */
-export async function saveUpload(workspaceId, file) {
+export async function saveUpload(workspaceId, file, { storage = env.uploads.storage } = {}) {
   if (!file) throw ApiError.badRequest('Choose a file to attach.');
   const mimeType = sniffType(file.buffer);
   if (!mimeType) throw new ApiError(415, 'UNSUPPORTED_FILE', 'Attach a JPG, PNG, WebP image or a PDF.');
-  const storageKey = path.join(String(workspaceId), `${crypto.randomUUID()}.bin`);
-  const target = path.join(uploadRoot(), storageKey);
-  await fs.mkdir(path.dirname(target), { recursive: true });
-  await fs.writeFile(target, file.buffer, { flag: 'wx' });
+  let storageKey;
+  if (storage === 'mongodb') {
+    const doc = await StoredFile.create({ owner: String(workspaceId), data: file.buffer });
+    storageKey = `${DB_PREFIX}${doc._id}`;
+  } else {
+    storageKey = path.join(String(workspaceId), `${crypto.randomUUID()}.bin`);
+    const target = path.join(uploadRoot(), storageKey);
+    await fs.mkdir(path.dirname(target), { recursive: true });
+    await fs.writeFile(target, file.buffer, { flag: 'wx' });
+  }
   return {
     storageKey,
     originalName: cleanName(file.originalname),
@@ -49,7 +63,17 @@ export async function saveUpload(workspaceId, file) {
   };
 }
 
+const dbId = (key) => {
+  const id = key.slice(DB_PREFIX.length);
+  return mongoose.isValidObjectId(id) ? id : null;
+};
+
 export async function readUpload(storageKey) {
+  if (storageKey.startsWith(DB_PREFIX)) {
+    const doc = dbId(storageKey) && (await StoredFile.findById(dbId(storageKey)).lean());
+    if (!doc) throw ApiError.notFound('File not found.');
+    return Buffer.from(doc.data.buffer ?? doc.data);
+  }
   const file = path.join(uploadRoot(), storageKey);
   // Defence in depth: never read outside the upload root.
   if (!file.startsWith(uploadRoot() + path.sep)) throw ApiError.notFound('File not found.');
@@ -57,6 +81,10 @@ export async function readUpload(storageKey) {
 }
 
 export async function removeUpload(storageKey) {
+  if (storageKey.startsWith(DB_PREFIX)) {
+    if (dbId(storageKey)) await StoredFile.deleteOne({ _id: dbId(storageKey) });
+    return;
+  }
   const file = path.join(uploadRoot(), storageKey);
   if (file.startsWith(uploadRoot() + path.sep)) await fs.rm(file, { force: true });
 }

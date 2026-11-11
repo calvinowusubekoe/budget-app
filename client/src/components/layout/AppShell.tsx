@@ -16,6 +16,10 @@ import { Backdrop, Logo, ThemeToggle } from './Brand';
 import { WorkspaceSwitcher } from './WorkspaceSwitcher';
 import { NotificationBell } from './NotificationBell';
 import { OfflineBanner, SyncIndicator } from '@/offline/OfflineUi';
+import { FeedbackButton } from '@/features/feedback/FeedbackDialog';
+import { TestBanner } from '@/features/feedback/TestBanner';
+import { useMeta } from '@/hooks/useMeta';
+import { MessageSquare } from 'lucide-react';
 import { unsentCount, useOutbox } from '@/offline/sync';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -103,6 +107,13 @@ function UserMenu() {
             <SettingsIcon /> Workspace settings
           </Link>
         </DropdownMenuItem>
+        {user.isAdmin && (
+          <DropdownMenuItem asChild>
+            <Link to="/admin/feedback">
+              <MessageSquare /> Tester feedback
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={signOut}>
           <LogOut /> Sign out
@@ -115,6 +126,7 @@ function UserMenu() {
 
 export function AppShell() {
   const { workspace } = useActiveWorkspace();
+  const { stage } = useMeta();
   const visible = (item: NavItem) => !item.only || item.only === workspace?.type;
 
   return (
@@ -156,6 +168,7 @@ export function AppShell() {
           <WorkspaceSwitcher className="max-w-60 lg:hidden" />
           <div className="ml-auto flex items-center gap-3">
             <ThemeToggle className="hidden sm:inline-flex" />
+            {stage === 'test' && <FeedbackButton />}
             <SyncIndicator />
             <NotificationBell />
             <UserMenu />
@@ -163,6 +176,7 @@ export function AppShell() {
         </header>
 
         <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-6 pb-28 sm:px-6 lg:pb-12">
+          <TestBanner className="mb-5" />
           <OfflineBanner />
           <Suspense fallback={<div className="grid min-h-[40vh] place-items-center"><Spinner label="Loading" /></div>}>
             <Outlet />

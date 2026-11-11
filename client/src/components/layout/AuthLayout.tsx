@@ -1,12 +1,14 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Backdrop, Logo, ThemeToggle } from './Brand';
+import { TestBanner } from '@/features/feedback/TestBanner';
 
 /** Centered glass pane for sign-in, registration and token flows. */
 export function AuthLayout({ title, subtitle, children, footer }: { title: string; subtitle?: ReactNode; children: ReactNode; footer?: ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col px-4 py-6">
       <Backdrop />
+      <TestBanner className="mx-auto mb-4 w-full max-w-md" />
       <header className="mx-auto flex w-full max-w-md items-center justify-between">
         <Link to="/" aria-label="Kontaa home">
           <Logo />

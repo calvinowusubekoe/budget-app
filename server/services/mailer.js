@@ -22,8 +22,9 @@ if (env.smtp.host) {
 export async function sendMail({ to, subject, text, html }) {
   const message = { from: env.mailFrom, to, subject, text, html };
   if (transport) return transport.sendMail(message);
-  if (env.isProd) throw new Error('SMTP is not configured; refusing to drop outbound email.');
+  if (env.isProd && env.stage !== 'test') throw new Error('SMTP is not configured; refusing to drop outbound email.');
   outbox.push(message);
+  if (outbox.length > 200) outbox.splice(0, outbox.length - 200);
   if (!env.isTest) logger.info(`\n--- email to ${to} ---\n${subject}\n\n${text}\n---------------------`);
   return { captured: true };
 }

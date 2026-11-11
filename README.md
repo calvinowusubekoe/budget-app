@@ -73,3 +73,4 @@ See [docs/deployment.md](docs/deployment.md) for configuration, the reverse prox
 - [API conventions](docs/api-documentation.md): auth, money, idempotency, errors, rate limits; full reference at `/api/docs`
 - [Security review](docs/security.md): controls, dependency audit, known limits, Ghana data protection readiness
 - [Deployment and operations](docs/deployment.md): configuration, proxy, backups and recovery, releases
+- [Test build online](docs/hosting-test-build.md): Netlify + Render + MongoDB Atlas for testers, with a demo account and a feedback inbox
