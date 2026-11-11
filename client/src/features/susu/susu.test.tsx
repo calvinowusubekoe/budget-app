@@ -28,7 +28,7 @@ describe('BeadTrack', () => {
 });
 
 describe('SusuPage', () => {
-  it('states plainly that BudgetFlow never holds Susu money, and shows plan progress', async () => {
+  it('states plainly that Kontaa never holds Susu money, and shows plan progress', async () => {
     vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) => {
       const u = String(url);
       if (u === '/api/workspaces') return jsonResponse({ success: true, data: [workspace] });
@@ -49,7 +49,7 @@ describe('SusuPage', () => {
       return jsonResponse({ success: true, data: [] });
     });
     renderWithProviders(<SusuPage />);
-    expect(screen.getByText('BudgetFlow never holds or moves Susu money')).toBeInTheDocument();
+    expect(screen.getByText('Kontaa never holds or moves Susu money')).toBeInTheDocument();
     expect(await screen.findByText('Market susu')).toBeInTheDocument();
     expect(screen.getByText(/2 missed/)).toBeInTheDocument();
     expect(screen.getByText(/Auntie Akos/)).toBeInTheDocument();

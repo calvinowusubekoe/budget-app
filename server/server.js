@@ -8,7 +8,7 @@ async function start() {
   await connectDatabase();
   const app = createApp();
   const server = app.listen(env.port, () => {
-    logger.info(`BudgetFlow API on http://localhost:${env.port}  (docs: /api/docs)`);
+    logger.info(`Kontaa API on http://localhost:${env.port}  (docs: /api/docs)`);
   });
   if (process.env.DISABLE_SCHEDULER !== 'true') startScheduler();
 

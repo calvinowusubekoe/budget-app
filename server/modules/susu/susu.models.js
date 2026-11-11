@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Dec = mongoose.Schema.Types.Decimal128;
 
 /*
- * Personal Susu is record-keeping only. BudgetFlow never collects, holds,
+ * Personal Susu is record-keeping only. Kontaa never collects, holds,
  * pools, moves or pays out Susu money; these records describe savings the
  * user keeps themselves or with a collector. See docs/susu-business-rules.md.
  */

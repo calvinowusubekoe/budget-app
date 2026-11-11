@@ -24,7 +24,8 @@ const COUNTERS = {
   susuPlans: (w) => SusuPlan.countDocuments({ workspaceId: w, status: { $in: ['active', 'paused'] } }),
   invoicesPerMonth: (w, now) => Invoice.countDocuments({ workspaceId: w, createdAt: { $gte: monthStart(now) } }),
   billsPerMonth: (w, now) => Bill.countDocuments({ workspaceId: w, createdAt: { $gte: monthStart(now) } }),
-  aiQuestionsPerMonth: (w, now) => AiUsage.countDocuments({ workspaceId: w, createdAt: { $gte: monthStart(now) } }),
+  aiQuestionsPerMonth: (w, now) => AiUsage.countDocuments({ workspaceId: w, feature: { $ne: 'scan' }, createdAt: { $gte: monthStart(now) } }),
+  receiptScansPerMonth: (w, now) => AiUsage.countDocuments({ workspaceId: w, feature: 'scan', createdAt: { $gte: monthStart(now) } }),
 };
 
 export const graceEnd = (periodEnd) => new Date(periodEnd.getTime() + env.plans.graceDays * DAY);

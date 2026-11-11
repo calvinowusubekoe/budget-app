@@ -7,7 +7,7 @@ const Id = mongoose.Schema.Types.ObjectId;
  * Practical business bookkeeping: customers, suppliers, invoices and bills.
  * Not certified accounting or tax software. Payments recorded against a
  * document create ordinary income/expense transactions in a tracking account;
- * BudgetFlow never collects or pays the money itself.
+ * Kontaa never collects or pays the money itself.
  */
 
 const contactFields = {
@@ -27,7 +27,7 @@ const lineSchema = new mongoose.Schema(
     description: { type: String, required: true, trim: true, maxlength: 200 },
     quantity: { type: Dec, required: true },
     unitPrice: { type: Dec, required: true },
-    // Percentage, e.g. 15 for 15%. Optional; BudgetFlow doesn't apply tax rules.
+    // Percentage, e.g. 15 for 15%. Optional; Kontaa doesn't apply tax rules.
     taxRate: { type: Dec, default: null },
     amount: { type: Dec, required: true },
     tax: { type: Dec, required: true },

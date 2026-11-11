@@ -57,7 +57,7 @@ async function send(path: string, { method = 'GET', body, form, workspaceId, ide
     });
   } catch (err) {
     if ((err as Error).name === 'AbortError') throw err;
-    throw new ApiError(0, 'NETWORK_ERROR', 'Can’t reach BudgetFlow. Check your connection and try again.');
+    throw new ApiError(0, 'NETWORK_ERROR', 'Can’t reach Kontaa. Check your connection and try again.');
   }
   if (!res.ok) {
     const payload = await res.json().catch(() => null);

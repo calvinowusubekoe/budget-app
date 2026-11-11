@@ -64,7 +64,7 @@ export function RegisterPage() {
             I agree to the <a className="text-primary underline" href="/legal/terms" target="_blank" rel="noreferrer">terms of use</a>.
           </ConsentRow>
           <ConsentRow id="acceptPrivacy" error={e.acceptPrivacy?.message} {...register('acceptPrivacy')}>
-            I have read the <a className="text-primary underline" href="/legal/privacy" target="_blank" rel="noreferrer">privacy notice</a> and agree to BudgetFlow processing my financial records to provide the service.
+            I have read the <a className="text-primary underline" href="/legal/privacy" target="_blank" rel="noreferrer">privacy notice</a> and agree to Kontaa processing my financial records to provide the service.
           </ConsentRow>
           <ConsentRow id="marketingConsent" {...register('marketingConsent')}>
             Send me occasional product updates. Optional; you can change this any time.

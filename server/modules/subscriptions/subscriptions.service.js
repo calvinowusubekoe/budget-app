@@ -161,7 +161,7 @@ export async function sweepSubscriptions(now = new Date()) {
       workspaceId: sub.workspaceId,
       type: 'subscription_renewal_due',
       title: `${planName(sub.plan)} ends on ${fmtDate(sub.currentPeriodEnd)}`,
-      body: "BudgetFlow doesn't charge you automatically. Renew from Plan and billing to keep your plan.",
+      body: "Kontaa doesn't charge you automatically. Renew from Plan and billing to keep your plan.",
       link: '/settings/billing',
       dedupeKey: `sub-renew-${sub._id}-${fmtDate(sub.currentPeriodEnd)}`,
     });

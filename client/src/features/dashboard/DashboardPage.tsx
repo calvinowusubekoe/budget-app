@@ -198,7 +198,7 @@ export function DashboardPage() {
         <ul className="grid gap-4 sm:grid-cols-3">
           {[
             { icon: Target, title: 'Business tools', body: 'Customers, suppliers, invoices, bills and profit and loss.' },
-            { icon: CreditCard, title: 'Subscriptions', body: 'Paid BudgetFlow plans, billed securely by an approved provider.' },
+            { icon: CreditCard, title: 'Subscriptions', body: 'Paid Kontaa plans, billed securely by an approved provider.' },
             { icon: PiggyBank, title: 'Reports and AI', body: 'Charts, period reports and an optional assistant that explains your numbers.' },
           ].map(({ icon: Icon, title, body }) => (
             <li key={title} className="flex gap-3">

@@ -1,6 +1,15 @@
 # Architecture
 
-BudgetFlow is a modular monolith: one Express API and one React SPA, in an npm workspace.
+> **Name:** the product is **Kontaa**. It was called BudgetFlow during development. Some internal identifiers keep the old prefix on purpose, because renaming them would sign people out or orphan data on their devices:
+> - the refresh cookie `bf_rt`
+> - the `bf-` browser storage keys (theme, offline outbox, sync tag) and the `budgetflow-refresh` lock
+> - the JWT issuer and audience
+> - the `bf-` payment reference prefix
+> - the existing local database name `budgetflow`
+>
+> None of these is shown to users. New installs default to a `kontaa` database.
+
+Kontaa is a modular monolith: one Express API and one React SPA, in an npm workspace.
 
 ```
 client/src/

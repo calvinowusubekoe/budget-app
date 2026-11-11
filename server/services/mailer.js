@@ -33,22 +33,22 @@ const link = (path) => new URL(path, env.clientUrl).toString();
 export const emails = {
   verifyEmail: (user, token) => ({
     to: user.email,
-    subject: 'Confirm your BudgetFlow email',
-    text: `Hi ${user.name},\n\nConfirm your email address to finish setting up BudgetFlow:\n${link(`/verify-email?token=${token}`)}\n\nThis link expires in 24 hours. If you did not create an account, ignore this email.`,
+    subject: 'Confirm your Kontaa email',
+    text: `Hi ${user.name},\n\nConfirm your email address to finish setting up Kontaa:\n${link(`/verify-email?token=${token}`)}\n\nThis link expires in 24 hours. If you did not create an account, ignore this email.`,
   }),
   passwordReset: (user, token) => ({
     to: user.email,
-    subject: 'Reset your BudgetFlow password',
+    subject: 'Reset your Kontaa password',
     text: `Hi ${user.name},\n\nUse this link to choose a new password:\n${link(`/reset-password?token=${token}`)}\n\nThis link expires in 1 hour and signs you out of every device. If you did not ask for this, ignore this email; your password stays the same.`,
   }),
   susuInvite: ({ email, inviterName, groupName, token }) => ({
     to: email,
-    subject: `${inviterName} added you to the ${groupName} Susu group on BudgetFlow`,
-    text: `${inviterName} added you to ${groupName}, a Susu group whose records are kept on BudgetFlow.\n\nJoin to see the rotation schedule and confirm the contributions and payouts recorded for you:\n${link(`/susu/invitations/accept?token=${token}`)}\n\nBudgetFlow only keeps records. It never collects or pays out Susu money; you keep paying the way your group agrees.\n\nThe invitation expires in 14 days.`,
+    subject: `${inviterName} added you to the ${groupName} Susu group on Kontaa`,
+    text: `${inviterName} added you to ${groupName}, a Susu group whose records are kept on Kontaa.\n\nJoin to see the rotation schedule and confirm the contributions and payouts recorded for you:\n${link(`/susu/invitations/accept?token=${token}`)}\n\nKontaa only keeps records. It never collects or pays out Susu money; you keep paying the way your group agrees.\n\nThe invitation expires in 14 days.`,
   }),
   workspaceInvite: ({ email, inviterName, workspaceName, role, token }) => ({
     to: email,
-    subject: `${inviterName} invited you to ${workspaceName} on BudgetFlow`,
+    subject: `${inviterName} invited you to ${workspaceName} on Kontaa`,
     text: `${inviterName} invited you to join the ${workspaceName} workspace as ${role}.\n\nAccept the invitation:\n${link(`/invitations/accept?token=${token}`)}\n\nThe invitation expires in 7 days.`,
   }),
 };

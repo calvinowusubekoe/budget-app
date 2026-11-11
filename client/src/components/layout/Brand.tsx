@@ -10,7 +10,7 @@ export function Logo({ className }: { className?: string }) {
         <path d="M17 41c6-15 12-15 15-8s9 6 15-9" fill="none" stroke="#E3C27A" strokeWidth="5.5" strokeLinecap="round" />
         <circle cx="17" cy="45" r="3.2" fill="#E3E8ED" />
       </svg>
-      <span className="text-[17px]">BudgetFlow</span>
+      <span className="text-[17px]">Kontaa</span>
     </span>
   );
 }

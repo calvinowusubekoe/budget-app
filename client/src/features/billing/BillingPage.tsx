@@ -27,6 +27,7 @@ const LIMIT_TEXT: Record<LimitKey, string> = {
   invoicesPerMonth: 'Invoices this month',
   billsPerMonth: 'Bills this month',
   aiQuestionsPerMonth: 'AI questions this month',
+  receiptScansPerMonth: 'Receipt scans this month',
 };
 const INCLUDES_TEXT: Record<LimitKey, string> = {
   accounts: 'accounts',
@@ -38,8 +39,9 @@ const INCLUDES_TEXT: Record<LimitKey, string> = {
   invoicesPerMonth: 'invoices a month',
   billsPerMonth: 'bills a month',
   aiQuestionsPerMonth: 'AI assistant questions a month',
+  receiptScansPerMonth: 'receipt scans a month',
 };
-const PERSONAL_LIMITS: LimitKey[] = ['accounts', 'budgets', 'savingsGoals', 'debts', 'recurring', 'susuPlans', 'aiQuestionsPerMonth'];
+const PERSONAL_LIMITS: LimitKey[] = ['accounts', 'budgets', 'savingsGoals', 'debts', 'recurring', 'susuPlans', 'aiQuestionsPerMonth', 'receiptScansPerMonth'];
 const BUSINESS_LIMITS: LimitKey[] = [...PERSONAL_LIMITS, 'invoicesPerMonth', 'billsPerMonth'];
 
 const PAY_STATUS: Record<PaymentStatus, { text: string; tone: string }> = {
@@ -92,7 +94,7 @@ export function BillingPage() {
       <p className="flex max-w-3xl items-start gap-2 text-sm text-muted">
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
         <span>
-          You pay on the provider's own secure page, so BudgetFlow never sees your card number, CVV or mobile money PIN. These payments are for BudgetFlow software only. BudgetFlow doesn't renew plans automatically, and Susu money never passes through BudgetFlow.
+          You pay on the provider's own secure page, so Kontaa never sees your card number, CVV or mobile money PIN. These payments are for Kontaa software only. Kontaa doesn't renew plans automatically, and Susu money never passes through Kontaa.
         </span>
       </p>
     </div>
@@ -202,7 +204,7 @@ function OfferCard({ current, plans, providers, isOwner }: { current: CurrentPla
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-muted">{plan.name} removes these limits and raises the AI assistant allowance to {plan.limits.aiQuestionsPerMonth} questions a month. Everything else in BudgetFlow is the same on both plans.</p>
+          <p className="mt-2 text-muted">{plan.name} removes these limits and raises the AI allowances to {plan.limits.aiQuestionsPerMonth} questions and {plan.limits.receiptScansPerMonth} receipt scans a month. Everything else in Kontaa is the same on both plans.</p>
         </div>
 
         <div className="glass grid gap-4 rounded-3xl p-5">
@@ -230,7 +232,7 @@ function OfferCard({ current, plans, providers, isOwner }: { current: CurrentPla
             {providerInfo ? `Pay with ${providerInfo.label}` : 'Pay'}
           </Button>
           {blocked && <p className="text-sm text-muted">{blocked}</p>}
-          {!blocked && <p className="text-xs text-muted">You'll go to {providerInfo?.label}'s page to pay, then come back here. The plan switches on once {providerInfo?.label} confirms the payment to BudgetFlow.</p>}
+          {!blocked && <p className="text-xs text-muted">You'll go to {providerInfo?.label}'s page to pay, then come back here. The plan switches on once {providerInfo?.label} confirms the payment to Kontaa.</p>}
         </div>
       </div>
 
@@ -327,10 +329,10 @@ function ReturnFromCheckout() {
   if (p.status === 'pending')
     return (
       <Alert tone="gold" action={<Button size="sm" variant="neu" loading={check.isPending} onClick={() => check.mutate(ref)}>Check again</Button>}>
-        The provider hasn't confirmed this payment yet. It can take a few minutes; BudgetFlow also keeps checking on its own.
+        The provider hasn't confirmed this payment yet. It can take a few minutes; Kontaa also keeps checking on its own.
       </Alert>
     );
-  if (p.status === 'review') return <Alert tone="danger">The provider confirmed a different amount from the plan price, so the plan wasn't changed. Contact BudgetFlow support with reference {p.reference}.</Alert>;
+  if (p.status === 'review') return <Alert tone="danger">The provider confirmed a different amount from the plan price, so the plan wasn't changed. Contact Kontaa support with reference {p.reference}.</Alert>;
   return <Alert tone="danger">{p.failureReason ?? "The payment didn't go through."} Nothing changed on your plan; you can try again below.</Alert>;
 }
 

@@ -13,10 +13,12 @@ import { ApiError } from '../../utils/ApiError.js';
 import * as groups from './groups.service.js';
 import * as records from './groupRecords.service.js';
 import { idempotencyKey } from '../../utils/idempotency.js';
+import { singleFile } from '../../middleware/upload.js';
+import { sendUpload } from '../../services/fileStorage.js';
 
 /*
  * Group Susu API: records only. Payout routes record payouts that happened
- * between members outside BudgetFlow; nothing here sends, collects or
+ * between members outside Kontaa; nothing here sends, collects or
  * initiates money, and no payment provider is involved.
  */
 
@@ -199,3 +201,15 @@ susuInvitationsRouter.use(requireAuth);
 const token = Joi.object({ token: Joi.string().max(200).required() });
 susuInvitationsRouter.get('/:token', validate({ params: token }), async (req, res) => ok(res, await groups.previewInvitation(req.valid.params.token)));
 susuInvitationsRouter.post('/:token/accept', validate({ params: token }), async (req, res) => ok(res, await groups.acceptInvitation(req.valid.params.token, req.user)));
+
+/* proof files: a receipt or screenshot of the payment made outside Kontaa */
+for (const [kind, path] of [['contribution', 'contributions'], ['payout', 'payouts']]) {
+  const params = validate({ params: Joi.object({ ...groupId, recordId: objectId.required() }) });
+  groupsRouter.post(`/:groupId/${path}/:recordId/proof`, params, loadGroup(), singleFile, async (req, res) =>
+    ok(res, await records.attachRecordProof(kind, req.group, req.groupMember, req.valid.params.recordId, req.file, req.user)),
+  );
+  groupsRouter.get(`/:groupId/${path}/:recordId/proof`, params, loadGroup(), async (req, res) => {
+    const { meta, data } = await records.openRecordProof(kind, req.group, req.groupMember, req.valid.params.recordId);
+    sendUpload(res, meta, data);
+  });
+}

@@ -3,7 +3,7 @@ import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, RefreshCw } from 'lucide-react';
+import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, Paperclip, RefreshCw, Sparkles } from 'lucide-react';
 import { Link } from 'react-router';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,8 @@ import { Alert } from '@/components/ui/feedback';
 import { cn } from '@/lib/utils';
 import { amountError, cleanAmount, formatMoney, formatYmd, RATE_SOURCE_LABEL, todayYmd } from '@/lib/money';
 import { ApiError, applyFieldErrors } from '@/services/api';
-import type { Frequency, Transaction, TransactionInput, TxType } from '@/types/api';
+import type { Frequency, ReceiptScan, Transaction, TransactionInput, TxType } from '@/types/api';
+import { api } from '@/services/api';
 import { useAccounts, useCategories, useRateMutations, useRateResolve, useSaveTransaction, useWs } from '@/features/finance/hooks';
 import { useScheduleMutations } from '@/features/planning/hooks';
 
@@ -49,9 +50,11 @@ interface Props {
   transaction?: Transaction | null;
   defaultType?: TxType;
   defaultAccountId?: string;
+  /** A scanned receipt: its suggested fields fill the form, and the file is attached after saving. */
+  receipt?: { scan: ReceiptScan; file: File } | null;
 }
 
-export function TransactionDialog({ open, onOpenChange, transaction, defaultType = 'expense', defaultAccountId }: Props) {
+export function TransactionDialog({ open, onOpenChange, transaction, defaultType = 'expense', defaultAccountId, receipt }: Props) {
   const ws = useWs();
   const base = ws.workspace?.baseCurrency ?? 'GHS';
   const accounts = useAccounts();
@@ -65,18 +68,22 @@ export function TransactionDialog({ open, onOpenChange, transaction, defaultType
 
   const activeAccounts = useMemo(() => (accounts.data?.items ?? []).filter((a) => a.status === 'active' || a.id === transaction?.account.id || a.id === transaction?.toAccount?.id), [accounts.data, transaction]);
 
+  const r = !transaction ? receipt?.scan.draft : undefined;
+  // A scanned receipt picks the first account in the receipt's currency.
+  const receiptAccount = r?.currency ? activeAccounts.find((a) => a.currency === r.currency)?.id : undefined;
+  const receiptNotes = r ? [r.reference && `Ref: ${r.reference}`, r.fees && `Fees: ${r.fees}${r.currency ? ` ${r.currency}` : ''}`].filter(Boolean).join('\n') : '';
   const defaults = (): Values => ({
-    type: transaction?.type ?? defaultType,
-    accountId: transaction?.account.id ?? defaultAccountId ?? activeAccounts[0]?.id ?? '',
+    type: transaction?.type ?? r?.type ?? defaultType,
+    accountId: transaction?.account.id ?? receiptAccount ?? defaultAccountId ?? activeAccounts[0]?.id ?? '',
     toAccountId: transaction?.toAccount?.id ?? '',
-    categoryId: transaction?.category?.id ?? '',
-    amount: transaction?.amount ?? '',
+    categoryId: transaction?.category?.id ?? r?.categoryId ?? '',
+    amount: transaction?.amount ?? r?.amount ?? '',
     toAmount: transaction?.toAmount ?? '',
     exchangeRate: '',
-    date: transaction?.date ?? todayYmd(),
-    description: transaction?.description ?? '',
-    payee: transaction?.payee ?? '',
-    notes: transaction?.notes ?? '',
+    date: transaction?.date ?? r?.date ?? todayYmd(),
+    description: transaction?.description ?? (r ? (r.description ?? r.counterparty ?? '').slice(0, 140) : ''),
+    payee: transaction?.payee ?? (r?.counterparty ?? '').slice(0, 80),
+    notes: transaction?.notes ?? receiptNotes,
     isRecurring: transaction?.recurrence.isRecurring ?? false,
     frequency: transaction?.recurrence.frequency ?? 'monthly',
     askFirst: false,
@@ -92,12 +99,13 @@ export function TransactionDialog({ open, onOpenChange, transaction, defaultType
       save.reset();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, transaction?.id]);
+  }, [open, transaction?.id, receipt]);
 
   // Pick a sensible default account once accounts load.
   useEffect(() => {
-    if (open && !v.accountId && activeAccounts[0]) setValue('accountId', activeAccounts[0].id);
-  }, [open, v.accountId, activeAccounts, setValue]);
+    // A scanned receipt prefers an account in the receipt's currency.
+    if (open && !v.accountId && activeAccounts[0]) setValue('accountId', receiptAccount ?? activeAccounts[0].id);
+  }, [open, v.accountId, activeAccounts, setValue, receiptAccount]);
 
   const account = activeAccounts.find((a) => a.id === v.accountId);
   const toAccount = activeAccounts.find((a) => a.id === v.toAccountId);
@@ -115,6 +123,13 @@ export function TransactionDialog({ open, onOpenChange, transaction, defaultType
   const showRateInput = needsRate && (rateOpen || rateMissing);
 
   const kindCategories = (categories.data ?? []).filter((c) => c.kind === v.type || c.id === transaction?.category?.id);
+
+  // The category list can arrive after the form is filled; re-apply the receipt's suggestion once it does.
+  const receiptCategoryReady = Boolean(r?.categoryId && kindCategories.some((c) => c.id === r.categoryId));
+  useEffect(() => {
+    if (open && receiptCategoryReady && r?.categoryId) setValue('categoryId', r.categoryId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, receiptCategoryReady]);
 
   const onSubmit = handleSubmit((values) => {
     const amount = cleanAmount(values.amount);
@@ -151,10 +166,16 @@ export function TransactionDialog({ open, onOpenChange, transaction, defaultType
           onOpenChange(false);
           if (r.queued) {
             // Not on the server yet: say so plainly, and never show it as recorded.
-            toast(`${label} saved on this device`, { description: values.isRecurring ? 'It will sync when you’re back online. Set up the repeat after it syncs.' : 'It will sync when you’re back online.' });
+            toast(`${label} saved on this device`, { description: [values.isRecurring && 'Set up the repeat after it syncs.', receipt && 'Attach the receipt after it syncs.', 'It will sync when you’re back online.'].filter(Boolean).join(' ') });
             return;
           }
           const t = r.transaction;
+          if (receipt && !editing) {
+            // Attach the scanned image to the new transaction. If that fails, the transaction stays saved.
+            const form = new FormData();
+            form.append('file', receipt.file);
+            api(`/transactions/${t.id}/attachments`, { method: 'POST', form, workspaceId: ws.id }).catch((e: Error) => toast.error(`Saved, but the receipt wasn’t attached: ${e.message}`));
+          }
           if (!editing && values.isRecurring) {
             // The saved transaction becomes the first occurrence of the schedule.
             schedules.create.mutate(
@@ -183,16 +204,17 @@ export function TransactionDialog({ open, onOpenChange, transaction, defaultType
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-xl overflow-y-auto">
         <DialogTitle>{editing ? 'Edit transaction' : 'Record a transaction'}</DialogTitle>
-        <DialogDescription>Record money that moved outside BudgetFlow, so your balances and reports stay true.</DialogDescription>
+        <DialogDescription>Record money that moved outside Kontaa, so your balances and reports stay true.</DialogDescription>
 
         {noAccounts ? (
           <div className="mt-5 grid gap-4">
-            <Alert tone="gold">Add an account first, so BudgetFlow knows where this money came from or went.</Alert>
+            <Alert tone="gold">Add an account first, so Kontaa knows where this money came from or went.</Alert>
             <Button asChild><Link to="/accounts" onClick={() => onOpenChange(false)}>Go to accounts</Link></Button>
           </div>
         ) : (
           <form onSubmit={onSubmit} noValidate className="mt-5 grid gap-4">
             {generalError && <Alert tone="danger">{generalError}</Alert>}
+            {receipt && !editing && <ReceiptNotice receipt={receipt} />}
 
             <Controller
               control={control}
@@ -398,6 +420,44 @@ function RateBox({ currency, base, transaction, resolution, loading, showInput, 
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/** What the AI read, labelled as a suggestion, with anything it was unsure of and possible duplicates. */
+function ReceiptNotice({ receipt }: { receipt: { scan: ReceiptScan; file: File } }) {
+  const { warnings, possibleDuplicates, draft } = receipt.scan;
+  return (
+    <div className="grid gap-2 rounded-2xl bg-gold-soft px-4 py-3 text-sm" role="status">
+      <p className="flex items-start gap-2">
+        <Sparkles className="mt-0.5 size-4 shrink-0 text-gold-ink" aria-hidden />
+        <span>
+          <strong className="font-medium">Filled in by AI from your receipt.</strong> Check every field before saving; nothing is saved until you do.
+          {!draft.amount && ' The amount wasn’t clear, so enter it yourself.'}
+        </span>
+      </p>
+      {warnings.length > 0 && (
+        <ul className="list-disc pl-10 text-xs text-muted">
+          {warnings.map((w) => (
+            <li key={w}>{w}</li>
+          ))}
+        </ul>
+      )}
+      {possibleDuplicates.length > 0 && (
+        <div className="rounded-xl bg-danger-soft px-3 py-2 text-xs">
+          <p className="font-medium">This may already be recorded:</p>
+          <ul className="mt-1">
+            {possibleDuplicates.map((d) => (
+              <li key={d.id}>
+                {formatYmd(d.date)}: {d.description}, {formatMoney(d.amount, d.currency)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <p className="flex items-center gap-1.5 text-xs text-muted">
+        <Paperclip className="size-3.5" aria-hidden /> {receipt.file.name} will be attached when you save.
+      </p>
     </div>
   );
 }

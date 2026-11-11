@@ -172,7 +172,7 @@ export function UpdatePrompt() {
   } = useRegisterSW();
   useEffect(() => {
     if (!needRefresh) return;
-    toast('A new version of BudgetFlow is ready', {
+    toast('A new version of Kontaa is ready', {
       duration: Infinity,
       action: { label: 'Reload', onClick: () => void updateServiceWorker(true) },
       onDismiss: () => setNeedRefresh(false),

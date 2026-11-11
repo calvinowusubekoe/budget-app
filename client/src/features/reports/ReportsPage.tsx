@@ -398,10 +398,10 @@ function SeparatedSection({ range }: { range: Range }) {
     { name: 'Income and spending', what: 'The only figures counted as income or spending in reports.', value: `${formatMoney(t.income, t.currency)} in, ${formatMoney(t.expense, t.currency)} out` },
     { name: 'Transfers between your accounts', what: 'Money moved, not earned or spent.', value: list(d.transfers) },
     { name: 'Savings allocations', what: 'Recorded against savings goals.', value: d.savingsAllocations.length ? d.savingsAllocations.map((s) => `${formatMoney(s.contributed, s.currency)} saved, ${formatMoney(s.withdrawn, s.currency)} taken out`).join('; ') : 'None' },
-    { name: 'Personal Susu', what: 'Manual records; BudgetFlow never holds Susu money.', value: `${list(d.personalSusu.contributions, 'Nothing')} contributed; ${list(d.personalSusu.withdrawals, 'nothing')} withdrawn` },
+    { name: 'Personal Susu', what: 'Manual records; Kontaa never holds Susu money.', value: `${list(d.personalSusu.contributions, 'Nothing')} contributed; ${list(d.personalSusu.withdrawals, 'nothing')} withdrawn` },
     { name: 'Group Susu', what: 'Your records across your groups.', value: `${list(d.groupSusu.yourContributions, 'Nothing')} contributed; ${list(d.groupSusu.payoutsToYou, 'nothing')} paid out to you` },
   ];
-  if (d.subscriptionPayments) rows.push({ name: 'BudgetFlow plan payments', what: 'What this workspace paid for its BudgetFlow plan.', value: list(d.subscriptionPayments) });
+  if (d.subscriptionPayments) rows.push({ name: 'Kontaa plan payments', what: 'What this workspace paid for its Kontaa plan.', value: list(d.subscriptionPayments) });
   return (
     <section className="glass rounded-3xl p-5 sm:p-6" aria-labelledby="sep-title">
       <h2 id="sep-title" className="text-lg font-semibold">Kept separate</h2>

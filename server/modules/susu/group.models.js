@@ -6,7 +6,7 @@ const Id = mongoose.Schema.Types.ObjectId;
 
 /*
  * Group Susu is record-keeping only. Members and organisers collect and pay
- * out among themselves, outside BudgetFlow. Nothing here holds, pools, moves
+ * out among themselves, outside Kontaa. Nothing here holds, pools, moves
  * or pays out money; "payout" records describe payouts that already happened.
  * See docs/susu-business-rules.md.
  *
@@ -19,7 +19,7 @@ export const RECORD_STATUSES = ['recorded', 'confirmed', 'disputed', 'cancelled'
 
 const eventSchema = new mongoose.Schema(
   {
-    type: { type: String, enum: ['recorded', 'corrected', 'confirmed', 'disputed', 'cancelled'], required: true },
+    type: { type: String, enum: ['recorded', 'corrected', 'confirmed', 'disputed', 'cancelled', 'proof_attached'], required: true },
     actorId: { type: Id, ref: 'User', required: true },
     reason: { type: String, default: '' },
     changes: { type: mongoose.Schema.Types.Mixed, default: null },
@@ -59,7 +59,7 @@ const susuGroupSchema = new mongoose.Schema(
 const susuGroupMemberSchema = new mongoose.Schema(
   {
     groupId: { type: Id, ref: 'SusuGroup', required: true, index: true },
-    // Null for people added by name who don't (yet) have a BudgetFlow account.
+    // Null for people added by name who don't (yet) have a Kontaa account.
     userId: { type: Id, ref: 'User', default: null },
     displayName: { type: String, required: true, trim: true, maxlength: 80 },
     // Visible only to organisers and assistants allowed to manage members.
@@ -119,9 +119,17 @@ const recordFields = {
   recordedBy: { type: Id, ref: 'User', required: true },
   // Full history of what happened to this record, in order.
   events: { type: [eventSchema], default: [] },
+  // A screenshot or receipt of the payment made outside Kontaa. Evidence for members, not proof Kontaa checked.
+  attachment: {
+    type: new mongoose.Schema(
+      { storageKey: String, originalName: String, mimeType: String, size: Number, sha256: String, uploadedBy: { type: Id, ref: 'User' }, uploadedAt: Date },
+      { _id: false },
+    ),
+    default: null,
+  },
 };
 
-/** A contribution the member says they made outside BudgetFlow. A record, not proof of payment. */
+/** A contribution the member says they made outside Kontaa. A record, not proof of payment. */
 const susuGroupContributionSchema = new mongoose.Schema(
   {
     ...recordFields,
@@ -136,7 +144,7 @@ const susuGroupContributionSchema = new mongoose.Schema(
 susuGroupContributionSchema.index({ groupId: 1, cycleId: 1, memberId: 1 });
 susuGroupContributionSchema.index({ recordedBy: 1, clientRef: 1 }, { unique: true, partialFilterExpression: { clientRef: { $type: 'string' } } });
 
-/** A payout that happened outside BudgetFlow. "Confirmed" means the recipient acknowledged it. */
+/** A payout that happened outside Kontaa. "Confirmed" means the recipient acknowledged it. */
 const susuPayoutSchema = new mongoose.Schema(
   {
     ...recordFields,
@@ -144,7 +152,7 @@ const susuPayoutSchema = new mongoose.Schema(
     expectedAmount: { type: Dec, required: true },
     actualAmount: { type: Dec, required: true },
     payoutDate: { type: Date, required: true },
-    // Free text such as "Cash at meeting" or an external MoMo reference. BudgetFlow doesn't verify it.
+    // Free text such as "Cash at meeting" or an external MoMo reference. Kontaa doesn't verify it.
     confirmationDetails: { type: String, trim: true, maxlength: 200, default: '' },
   },
   { timestamps: true },

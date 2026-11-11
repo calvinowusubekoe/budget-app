@@ -327,7 +327,8 @@ describe('susu business-rule guardrails', () => {
     const routes = groupsRouter.stack.filter((l) => l.route).map((l) => ({ path: l.route.path, methods: Object.keys(l.route.methods) }));
     for (const r of routes) expect(r.path).not.toMatch(/checkout|wallet|transfer|disburse|settle|collect|webhook|charge|send|execute|initiate|pay(?!outs)/i);
     const payoutRoutes = routes.filter((r) => r.path.includes('payouts'));
-    expect(payoutRoutes.map((r) => `${r.methods[0]} ${r.path}`).sort()).toEqual(['get /:groupId/payouts', 'patch /:groupId/payouts/:recordId', 'post /:groupId/cycles/:cycleId/payouts'].sort());
+    // Proof files are evidence of a payout made elsewhere; they don't move money.
+    expect(payoutRoutes.map((r) => `${r.methods[0]} ${r.path}`).sort()).toEqual(['get /:groupId/payouts', 'patch /:groupId/payouts/:recordId', 'post /:groupId/cycles/:cycleId/payouts', 'get /:groupId/payouts/:recordId/proof', 'post /:groupId/payouts/:recordId/proof'].sort());
   });
 
   it('no Susu code references a payment provider or the payments module', async () => {

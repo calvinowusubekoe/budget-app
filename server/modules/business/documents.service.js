@@ -18,7 +18,7 @@ import { assertWithinLimit } from '../subscriptions/entitlements.js';
  * Invoices (money owed to the business) and bills (money the business owes)
  * share one lifecycle: draft, then issued, then paid in one or more payments,
  * or void. A payment is recorded as an income (invoice) or expense (bill)
- * transaction in a tracking account. BudgetFlow doesn't send or receive the money.
+ * transaction in a tracking account. Kontaa doesn't send or receive the money.
  */
 
 export const KINDS = {
@@ -55,6 +55,9 @@ export async function presentDoc(kind, doc, today, party) {
   const b = balances(doc);
   const accounts = await Account.find({ _id: { $in: doc.payments.map((x) => x.accountId) } }).select('name').lean();
   const accountName = new Map(accounts.map((a) => [String(a._id), a.name]));
+  // Payment receipts are attachments on each payment's linked transaction.
+  const linked = await Transaction.find({ _id: { $in: doc.payments.map((x) => x.transactionId) } }).select('attachmentCount').lean();
+  const receipts = new Map(linked.map((t) => [String(t._id), t.attachmentCount ?? 0]));
   return {
     id: String(doc._id),
     kind,
@@ -79,6 +82,7 @@ export async function presentDoc(kind, doc, today, party) {
       date: toYmd(x.date),
       account: { id: String(x.accountId), name: accountName.get(String(x.accountId)) ?? 'Account' },
       transactionId: String(x.transactionId),
+      receiptCount: receipts.get(String(x.transactionId)) ?? 0,
       removed: Boolean(x.removedAt),
       removeReason: x.removeReason,
     })),

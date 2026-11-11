@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 /**
- * Payments for BudgetFlow subscriptions only. Nothing else in BudgetFlow
+ * Payments for Kontaa subscriptions only. Nothing else in Kontaa
  * takes money, and Susu never does.
  *
  * Card details are never seen or stored: checkout happens on the provider's

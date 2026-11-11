@@ -324,7 +324,7 @@ export function presentCycle(c, membersById) {
     contributorCount: n,
     contributorMemberIds: c.contributorMemberIds.map(String),
     expectedPerMember: normalize(per, cur),
-    // An estimate of what the schedule says should be collected; not money BudgetFlow holds.
+    // An estimate of what the schedule says should be collected; not money Kontaa holds.
     expectedPool: normalize(new D(per).times(n).toString(), cur),
     status: c.status,
     cancelReason: c.cancelReason,

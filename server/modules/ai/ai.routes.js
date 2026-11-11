@@ -11,6 +11,8 @@ import { ok, requestContext } from '../../utils/http.js';
 import { addMonths, daysBetween, todayIn } from '../../utils/periods.js';
 import { can } from '../workspaces/permissions.js';
 import * as svc from './ai.service.js';
+import { scanReceipt } from './receipt.service.js';
+import { singleFile } from '../../middleware/upload.js';
 
 /** Optional AI assistant. Read-only: no route here changes financial records. */
 export const aiRouter = Router();
@@ -64,4 +66,9 @@ aiRouter.post(
     if (history.length && history[0].role !== 'user') throw ApiError.badRequest('The conversation must start with a question.');
     ok(res, await svc.ask(req.workspace, req.user, { question, history, from, to }, today, { includeSubscriptions: can(req.membership.role, 'workspace.update') }, requestContext(req)));
   },
+);
+
+// Reads a receipt or payment screenshot and suggests a new transaction's fields. Saves nothing.
+aiRouter.post('/receipts/scan', askLimiter, requirePermission('records.write'), singleFile, async (req, res) =>
+  ok(res, await scanReceipt(req.workspace, req.user, req.file, todayIn(req.user.timezone), requestContext(req))),
 );

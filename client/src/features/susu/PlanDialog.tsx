@@ -90,7 +90,7 @@ export function PlanDialog({ open, onOpenChange, plan }: { open: boolean; onOpen
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-lg overflow-y-auto">
         <DialogTitle>{plan ? 'Edit Susu plan' : 'New personal Susu plan'}</DialogTitle>
-        <DialogDescription>A record of what you set aside and where. BudgetFlow keeps the record; the money stays with you or your collector.</DialogDescription>
+        <DialogDescription>A record of what you set aside and where. Kontaa keeps the record; the money stays with you or your collector.</DialogDescription>
         <form onSubmit={onSubmit} noValidate className="mt-5 grid gap-4 sm:grid-cols-2">
           <Field label="Plan name" htmlFor="sp-name" error={formState.errors.name?.message} className="sm:col-span-2"><Input id="sp-name" placeholder="e.g. Daily market susu" {...register('name')} /></Field>
           <Field label="I contribute" htmlFor="sp-amount" error={formState.errors.contributionAmount?.message} hint={plan && plan.summary.contributionCount > 0 ? 'A new amount applies from today.' : undefined}>

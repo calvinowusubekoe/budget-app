@@ -19,10 +19,10 @@ const schema = Joi.object({
   PORT: Joi.number().port().default(4000),
   MONGODB_URI: Joi.string()
     .uri({ scheme: ['mongodb', 'mongodb+srv'] })
-    .default('mongodb://127.0.0.1:27017/budgetflow'),
+    .default('mongodb://127.0.0.1:27017/kontaa'),
   MONGODB_URI_TEST: Joi.string()
     .uri({ scheme: ['mongodb', 'mongodb+srv'] })
-    .default('mongodb://127.0.0.1:27017/budgetflow_test'),
+    .default('mongodb://127.0.0.1:27017/kontaa_test'),
   CLIENT_URL: Joi.string().uri().default('http://localhost:5173'),
   CORS_ORIGINS: Joi.string().allow('').default(''),
   TRUST_PROXY: Joi.alternatives(Joi.boolean(), Joi.number().integer().min(0)).default(false),
@@ -45,13 +45,13 @@ const schema = Joi.object({
   SMTP_USER: Joi.string().allow('').default(''),
   SMTP_PASS: Joi.string().allow('').default(''),
   SMTP_SECURE: Joi.boolean().default(false),
-  MAIL_FROM: Joi.string().default('BudgetFlow <no-reply@budgetflow.local>'),
+  MAIL_FROM: Joi.string().default('Kontaa <no-reply@kontaa.local>'),
 
   EXCHANGE_RATE_PROVIDER: Joi.string().valid('none', 'open_er_api').default('none'),
   UPLOAD_DIR: Joi.string().default('uploads'),
   MAX_UPLOAD_MB: Joi.number().min(1).max(25).default(5),
 
-  // Subscription payments (BudgetFlow's own plans only). A provider is enabled only when its keys are set.
+  // Subscription payments (Kontaa's own plans only). A provider is enabled only when its keys are set.
   PAYSTACK_SECRET_KEY: Joi.string().pattern(/^sk_(test|live)_\w+$/).allow('').default(''),
   FLUTTERWAVE_SECRET_KEY: Joi.string().pattern(/^FLWSECK(_TEST)?-\w+(-X)?$/).allow('').default(''),
   FLUTTERWAVE_WEBHOOK_HASH: Joi.string().min(16).allow('').default(''),
@@ -73,7 +73,7 @@ const schema = Joi.object({
   API_DOCS: Joi.boolean().default(Joi.ref('$notProd')),
 
   TERMS_VERSION: Joi.string().default('2026-11-01'),
-  PRIVACY_VERSION: Joi.string().default('2026-11-11'),
+  PRIVACY_VERSION: Joi.string().default('2026-11-11.2'),
 }).unknown(true);
 
 // A blank line like `JWT_ACCESS_SECRET=` in .env means "not set", so defaults apply.

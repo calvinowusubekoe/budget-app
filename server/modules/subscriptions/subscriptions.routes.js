@@ -11,7 +11,7 @@ import { BILLING_PERIODS, PAID_PLANS, listPlans } from './plans.js';
 import * as svc from './subscriptions.service.js';
 
 /**
- * BudgetFlow's own plans. There is deliberately no route that sets a plan,
+ * Kontaa's own plans. There is deliberately no route that sets a plan,
  * status or period: those change only when the payments service applies a
  * provider-verified payment.
  */

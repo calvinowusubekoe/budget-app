@@ -53,7 +53,7 @@ export function GroupDialog({ open, onOpenChange }: { open: boolean; onOpenChang
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-lg overflow-y-auto">
         <DialogTitle>New Susu group</DialogTitle>
-        <DialogDescription>Keep the records for a rotating group you organise. Members keep paying and collecting the way you agree; BudgetFlow never handles the money.</DialogDescription>
+        <DialogDescription>Keep the records for a rotating group you organise. Members keep paying and collecting the way you agree; Kontaa never handles the money.</DialogDescription>
         <form onSubmit={onSubmit} noValidate className="mt-5 grid gap-4 sm:grid-cols-2">
           <Field label="Group name" htmlFor="ng-name" error={formState.errors.name?.message} className="sm:col-span-2"><Input id="ng-name" placeholder="e.g. Makola Traders Susu" {...register('name')} /></Field>
           <Field label="Each member contributes" htmlFor="ng-amt" error={formState.errors.contributionAmount?.message}><Input id="ng-amt" inputMode="decimal" className="tabular" placeholder="100.00" {...register('contributionAmount')} /></Field>

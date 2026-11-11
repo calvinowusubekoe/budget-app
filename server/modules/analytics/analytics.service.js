@@ -17,7 +17,7 @@ import { Payment } from '../payments/payment.models.js';
  * here; the client and the AI assistant only display or quote them.
  *
  * Income and expense figures use tracked income/expense transactions only.
- * Transfers, savings allocations, Susu records and BudgetFlow subscription
+ * Transfers, savings allocations, Susu records and Kontaa subscription
  * payments are reported separately and never mixed into those totals.
  */
 

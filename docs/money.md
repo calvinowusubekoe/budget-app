@@ -1,6 +1,6 @@
 # Money and currencies
 
-How BudgetFlow stores and calculates money. Read this before touching anything that adds, converts or reports amounts.
+How Kontaa stores and calculates money. Read this before touching anything that adds, converts or reports amounts.
 
 ## No floating point, anywhere
 
@@ -13,7 +13,7 @@ How BudgetFlow stores and calculates money. Read this before touching anything t
 
 ## Accounts are tracking labels
 
-An account (cash, bank, mobile money, savings, other) records where money sits *outside* BudgetFlow. Its balance is derived, never stored:
+An account (cash, bank, mobile money, savings, other) records where money sits *outside* Kontaa. Its balance is derived, never stored:
 
 ```
 balance = opening balance + income − expenses − transfers out + transfers received

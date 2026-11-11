@@ -39,7 +39,7 @@ describe('ReportsPage', () => {
     expect(screen.getByText('60.0%')).toBeInTheDocument();
     expect(await screen.findByText('Transfers between your accounts')).toBeInTheDocument();
     expect(screen.getByText('GH₵500.00 (1)')).toBeInTheDocument();
-    expect(screen.getByText('BudgetFlow plan payments')).toBeInTheDocument();
+    expect(screen.getByText('Kontaa plan payments')).toBeInTheDocument();
     expect(await screen.findByText('Where the money went')).toBeInTheDocument();
   });
 });

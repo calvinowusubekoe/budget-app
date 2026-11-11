@@ -1,13 +1,13 @@
 # PWA and offline use
 
-BudgetFlow installs as a Progressive Web App. It uses `vite-plugin-pwa` (Workbox `generateSW`) with the manifest in `client/vite.config.ts` and icons generated from `client/public/pwa-icon.svg`.
+Kontaa installs as a Progressive Web App. It uses `vite-plugin-pwa` (Workbox `generateSW`) with the manifest in `client/vite.config.ts` and icons generated from `client/public/pwa-icon.svg`.
 
 ## What the service worker caches
 
 - **Only the app shell:** HTML, JS, CSS, fonts and icons, precached at build time. The app opens and navigates offline.
 - **Never API responses.** `/api` requests are excluded from the navigation fallback and have no runtime caching, so no financial data is written to the Cache Storage.
 - **Query data stays in memory.** The TanStack Query cache isn't persisted to disk, and signing out clears it.
-- **Updates wait for the person.** When a new version is ready the app shows "A new version of BudgetFlow is ready" with a **Reload** button, so an update never interrupts someone mid-entry.
+- **Updates wait for the person.** When a new version is ready the app shows "A new version of Kontaa is ready" with a **Reload** button, so an update never interrupts someone mid-entry.
 - **Recovery after a bad deploy.** If nothing renders 8 seconds after load (for example, a broken cached version), a small script in `index.html` activates any waiting update, or checks for one, and reloads once.
 
 ## Offline drafts and the sync queue
@@ -39,7 +39,7 @@ Editing, deleting, confirming and everything else needs a connection, and says s
    - when the browser comes back online
    - once a minute while online
    - when the person taps **Sync now**
-   - on a Background Sync wake-up, where supported (Chromium). The service worker can't send records itself, because the access token lives only in page memory, so it wakes any open BudgetFlow tab. With no tab open, records wait until the app is next opened.
+   - on a Background Sync wake-up, where supported (Chromium). The service worker can't send records itself, because the access token lives only in page memory, so it wakes any open Kontaa tab. With no tab open, records wait until the app is next opened.
 5. **Retries.** Network and server errors (status 0, 429, 5xx) retry after 30 s, 2 min, 10 min, then every 30 min. A 401 pauses the queue until sign-in.
 6. **Duplicate prevention.**
    - Each record is sent with its original Idempotency-Key. The server stores one record per key for each person: transactions use `clientRef`, Susu entries and group contributions use `clientRef`.
@@ -55,7 +55,7 @@ Editing, deleting, confirming and everything else needs a connection, and says s
 
 ## Starting while offline
 
-The app shell opens, but restoring the session needs the server. If BudgetFlow can't be reached at startup, the app shows **Can't reach BudgetFlow** rather than the sign-in page. The session is untouched, queued records are kept, and it reconnects by itself when the connection returns. During a running session a lost connection never signs the person out.
+The app shell opens, but restoring the session needs the server. If Kontaa can't be reached at startup, the app shows **Can't reach Kontaa** rather than the sign-in page. The session is untouched, queued records are kept, and it reconnects by itself when the connection returns. During a running session a lost connection never signs the person out.
 
 ## Known limits
 

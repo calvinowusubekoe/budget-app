@@ -55,14 +55,14 @@ export async function changePassword(req, res) {
   ok(res, { message: 'Password updated. Other devices have been signed out.' });
 }
 
-/** Data-subject access: everything BudgetFlow holds about the profile itself. */
+/** Data-subject access: everything Kontaa holds about the profile itself. */
 export async function exportProfile(req, res) {
   const user = await User.findById(req.user._id).lean();
   const memberships = await WorkspaceMember.find({ userId: user._id }).lean();
   delete user.passwordHash;
   delete user.failedLoginCount;
   delete user.lockedUntil;
-  res.setHeader('Content-Disposition', 'attachment; filename="budgetflow-profile.json"');
+  res.setHeader('Content-Disposition', 'attachment; filename="kontaa-profile.json"');
   ok(res, { user, memberships });
 }
 

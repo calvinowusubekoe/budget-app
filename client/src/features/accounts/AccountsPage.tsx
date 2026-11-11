@@ -72,7 +72,7 @@ export function AccountsPage() {
             title="Add your first account"
             action={writable && <Button onClick={openNew}><Plus /> Add account</Button>}
           >
-            Start with where you spend from most, like your MoMo wallet or cash. Enter what’s in it today and BudgetFlow keeps the balance as you record transactions.
+            Start with where you spend from most, like your MoMo wallet or cash. Enter what’s in it today and Kontaa keeps the balance as you record transactions.
           </EmptyState>
         </Card>
       ) : (

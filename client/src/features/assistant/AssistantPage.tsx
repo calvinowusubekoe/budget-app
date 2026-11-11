@@ -32,7 +32,7 @@ export function AssistantPage() {
         <h1 className="flex items-center gap-2 text-[28px] font-semibold">
           <Sparkles className="size-6 text-gold" aria-hidden /> AI Assistant
         </h1>
-        <p className="max-w-2xl text-muted">Ask about your records in plain language. Answers quote BudgetFlow's own figures; anything the assistant suggests is a suggestion, not a verified fact.</p>
+        <p className="max-w-2xl text-muted">Ask about your records in plain language. Answers quote Kontaa's own figures; anything the assistant suggests is a suggestion, not a verified fact.</p>
       </header>
       {status.isPending ? <Skeleton className="h-48 rounded-3xl" /> : status.isError ? <Alert tone="danger">{status.error.message}</Alert> : <Gate status={status.data} />}
     </div>
@@ -97,27 +97,28 @@ function Consent({ status }: { status: AiStatus }) {
       </h2>
       <div className="grid gap-3 text-sm sm:grid-cols-2">
         <div>
-          <p className="font-medium">Sent to {status.provider} with each question</p>
+          <p className="font-medium">Sent to {status.provider}</p>
           <ul className="mt-1 list-disc pl-5 text-muted">
             <li>Totals of income and spending, by month and category</li>
             <li>Budgets, savings goals and debt balances</li>
             <li>Your Susu plans and group standing (names and amounts)</li>
             <li>Business totals, for business workspaces</li>
             <li>Your question and the conversation on this screen</li>
+            <li>When you scan a receipt: that image, with your category names</li>
           </ul>
         </div>
         <div>
           <p className="font-medium">Never sent</p>
           <ul className="mt-1 list-disc pl-5 text-muted">
             <li>Transaction descriptions, payees and notes</li>
-            <li>Receipts, proofs and other files</li>
+            <li>Receipts and proofs already attached to records</li>
             <li>Your email, phone or account numbers</li>
             <li>Anything from other workspaces</li>
           </ul>
         </div>
       </div>
       <p className="text-sm text-muted">
-        BudgetFlow doesn't keep your questions or the answers. The assistant can't change your records. {status.provider} processes the request under its own data terms. You can withdraw this at any time on this screen.
+        Kontaa doesn't keep your questions or the answers. A scanned receipt is kept only if you save the transaction, as its attachment. The assistant can't change your records. {status.provider} processes the request under its own data terms. You can withdraw this at any time on this screen.
       </p>
       <div>
         <Button loading={consent.isPending} onClick={() => consent.mutate(undefined, { onError: (e) => toast.error(e.message) })}>

@@ -38,7 +38,7 @@ export const flutterwave = {
         redirect_url: callbackUrl,
         customer: { email, name },
         meta: metadata,
-        customizations: { title: 'BudgetFlow subscription' },
+        customizations: { title: 'Kontaa subscription' },
       },
     });
     if (!r.ok || r.json?.status !== 'success' || !r.json.data?.link) throw providerUnavailable(LABEL);

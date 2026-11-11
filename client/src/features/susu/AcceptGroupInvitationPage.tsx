@@ -51,7 +51,7 @@ export function AcceptGroupInvitationPage() {
             <p className="font-semibold">{p!.groupName}</p>
             <p className="text-muted">{p!.inviterName} invited you. Each member contributes {formatMoney(p!.contributionAmount, p!.currency)} {EVERY[p!.frequency] ?? 'regularly'}.</p>
           </div>
-          <Alert tone="info">Joining lets you see the schedule and confirm or dispute the records kept for you. You keep paying the way your group agrees; BudgetFlow never handles Susu money.</Alert>
+          <Alert tone="info">Joining lets you see the schedule and confirm or dispute the records kept for you. You keep paying the way your group agrees; Kontaa never handles Susu money.</Alert>
           {accept.error && <Alert tone="danger">{accept.error.message}</Alert>}
           <Button size="lg" loading={accept.isPending} onClick={() => accept.mutate()}>Join the group</Button>
           <Button variant="ghost" onClick={() => logout.mutate(false)}>Use a different account</Button>

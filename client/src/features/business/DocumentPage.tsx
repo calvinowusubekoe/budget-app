@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { toast } from 'sonner';
-import { ArrowLeft, Ban, Download, Pencil, Plus, Send, Trash2 } from 'lucide-react';
+import { ArrowLeft, Ban, Download, Paperclip, Pencil, Plus, Send, Trash2 } from 'lucide-react';
+import { TransactionDetail } from '@/features/transactions/TransactionDetail';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
@@ -31,6 +32,8 @@ export function DocumentPage({ kind }: { kind: DocKind }) {
   const [voiding, setVoiding] = useState(false);
   const [reason, setReason] = useState('');
   const [removing, setRemoving] = useState<string | null>(null);
+  // Receipts for a payment live on its linked transaction; the transaction panel shows and adds them.
+  const [receiptsFor, setReceiptsFor] = useState<string | null>(null);
   const isInvoice = kind === 'invoice';
   const list = `/business/${isInvoice ? 'invoices' : 'bills'}`;
 
@@ -118,6 +121,11 @@ export function DocumentPage({ kind }: { kind: DocKind }) {
                         <span className="block truncate" title={p.account.name}>{p.account.name}</span>
                       </span>
                       <span className={cn('tabular font-semibold', p.removed && 'line-through')}>{formatMoney(p.amount, d.currency)}</span>
+                      {!p.removed && (
+                        <Button size="sm" variant="ghost" className="h-8 px-2" onClick={() => setReceiptsFor(p.transactionId)} aria-label={p.receiptCount ? `Receipts for this payment (${p.receiptCount})` : 'Add a receipt for this payment'}>
+                          <Paperclip /> {p.receiptCount ? p.receiptCount : writable ? 'Add receipt' : null}
+                        </Button>
+                      )}
                       {writable && !p.removed && <Button size="icon" variant="ghost" className="size-8" aria-label="Remove payment" onClick={() => { setRemoving(p.id); setReason(''); }}><Trash2 /></Button>}
                     </div>
                     {p.removed && <p className="text-xs text-subtle">Removed: {p.removeReason}</p>}
@@ -133,6 +141,8 @@ export function DocumentPage({ kind }: { kind: DocKind }) {
               </ul>
             )}
           </Card>
+
+          <TransactionDetail id={receiptsFor} onClose={() => setReceiptsFor(null)} onEdit={() => setReceiptsFor(null)} />
 
           {writable && d.status !== 'void' && (
             voiding ? (

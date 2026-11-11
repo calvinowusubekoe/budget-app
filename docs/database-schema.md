@@ -12,7 +12,7 @@ MongoDB with Mongoose. This reference is generated from the models in `server/mo
   - `AuditLog` and `SusuActivityLog` reject updates.
 - **Exchange rates:** each transaction stores its own snapshot (`reporting.rate`, `source`, `rateDate`), and snapshots are never recalculated.
 - **Idempotency:** `clientRef` or `idempotencyKey` fields have partial unique indexes, so a retried or offline-replayed create is stored once.
-- **Payments:** these collections are for BudgetFlow subscriptions only (`Payment`, `PaymentWebhookEvent`, `Subscription`). No collection holds a balance or a wallet, and none moves Susu money.
+- **Payments:** these collections are for Kontaa subscriptions only (`Payment`, `PaymentWebhookEvent`, `Subscription`). No collection holds a balance or a wallet, and none moves Susu money.
 - **Expiring data (TTL indexes):** notifications after 180 days, AI usage rows after 400 days, plus the expiring auth tokens.
 - **Transactions:** multi-document writes use MongoDB transactions where the deployment supports them (any replica set, including Atlas). See `runAtomic` in `server/config/db.js`.
 
@@ -56,6 +56,7 @@ Indexes:
   - `outcome` String (required) answered | refused | error
   - `createdAt` Date
 
+  - `feature` String ask | scan
 Indexes:
   - {"workspaceId":1,"createdAt":-1}
   - {"createdAt":1} TTL 400d
@@ -593,6 +594,8 @@ Indexes:
   - `createdAt` Date
   - `updatedAt` Date
 
+  - `attachment` Object (proof file: storageKey, originalName, mimeType, size, sha256, uploadedBy, uploadedAt)
+  - `clientRef` String (offline replay key; SusuGroupContribution only)
 Indexes:
   - {"groupId":1}
   - {"groupId":1,"cycleId":1,"memberId":1}
@@ -651,6 +654,7 @@ Indexes:
   - `createdAt` Date
   - `updatedAt` Date
 
+  - `attachment` Object (proof file: storageKey, originalName, mimeType, size, sha256, uploadedBy, uploadedAt)
 Indexes:
   - {"groupId":1}
   - {"groupId":1,"cycleId":1}

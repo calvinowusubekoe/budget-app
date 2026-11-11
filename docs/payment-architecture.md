@@ -1,6 +1,6 @@
 # Subscriptions and payments
 
-This is the only place BudgetFlow takes money: payments for BudgetFlow's own software plans, processed by an approved provider (Paystack or Flutterwave) and settled to BudgetFlow's merchant account. Susu contributions, payouts and withdrawals never go through it, and there is no BudgetFlow wallet or balance.
+This is the only place Kontaa takes money: payments for Kontaa's own software plans, processed by an approved provider (Paystack or Flutterwave) and settled to Kontaa's merchant account. Susu contributions, payouts and withdrawals never go through it, and there is no Kontaa wallet or balance.
 
 ## Plans
 
@@ -22,8 +22,8 @@ This is the only place BudgetFlow takes money: payments for BudgetFlow's own sof
 ## Payment flow
 
 1. The owner picks a period and a provider on **Settings → Plan and billing**.
-2. `POST /api/subscriptions/checkout` creates a pending payment with BudgetFlow's own reference (`bf-…`) and a hosted checkout session at the provider. The price comes from the server's configuration; any amount in the request is ignored. An `Idempotency-Key` makes a double click open one checkout, not two.
-3. The user pays on the provider's page. BudgetFlow never sees card numbers, CVVs or mobile money PINs.
+2. `POST /api/subscriptions/checkout` creates a pending payment with Kontaa's own reference (`bf-…`) and a hosted checkout session at the provider. The price comes from the server's configuration; any amount in the request is ignored. An `Idempotency-Key` makes a double click open one checkout, not two.
+3. The user pays on the provider's page. Kontaa never sees card numbers, CVVs or mobile money PINs.
 4. The provider sends a webhook to `/api/payments/webhooks/<provider>`. Then:
    - The server checks the signature: an HMAC-SHA512 of the raw body for Paystack, or the `verif-hash` secret for Flutterwave. Bad signatures get a 401.
    - Each event is stored once by its event id. A repeated delivery is acknowledged and ignored.
@@ -35,7 +35,7 @@ When the user comes back from checkout, the page calls `POST /api/subscriptions/
 
 ## Renewals, grace, cancellation and expiry
 
-- **Renewals:** BudgetFlow keeps no saved cards, so nothing is charged automatically. Renewing is another payment. Paying early extends from the end of the current period, so no days are lost. Owners get a reminder `RENEWAL_REMINDER_DAYS` (default 7) before the end.
+- **Renewals:** Kontaa keeps no saved cards, so nothing is charged automatically. Renewing is another payment. Paying early extends from the end of the current period, so no days are lost. Owners get a reminder `RENEWAL_REMINDER_DAYS` (default 7) before the end.
 - **Grace period:** after the paid period ends, the plan keeps working for `SUBSCRIPTION_GRACE_DAYS` (default 3) while the owner renews, shown as "past due". After that it expires and the workspace is on Free.
 - **Cancelling** stops the plan at the end of the paid period, with no grace period. The owner can choose "Keep my plan" until then. No refund is made for the time left.
 - **How the plan is worked out:** entitlements come from the dates every time, so a late scheduler run can't give or take away access. The scheduler (every 15 minutes) updates stored statuses and sends notifications.

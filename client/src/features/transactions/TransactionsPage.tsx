@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
-import { ArrowLeftRight, CalendarClock, Download, Plus, Search, X } from 'lucide-react';
+import { ArrowLeftRight, CalendarClock, Download, Plus, ScanLine, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input, Select } from '@/components/ui/input';
@@ -10,7 +10,8 @@ import { cn } from '@/lib/utils';
 import { formatMoney, formatYmd, monthRange } from '@/lib/money';
 import { apiBlob, saveBlob } from '@/services/api';
 import { can } from '@/features/workspaces/useWorkspaces';
-import type { Transaction, TxType } from '@/types/api';
+import type { ReceiptScan, Transaction, TxType } from '@/types/api';
+import { ScanReceiptDialog } from '@/features/receipts/ScanReceiptDialog';
 import { toQuery, useAccounts, useCategories, useSummary, useTransactions, useWs, type TxFilters } from '@/features/finance/hooks';
 import { CategoryIcon } from '@/features/finance/icons';
 import { TransactionDialog } from './TransactionDialog';
@@ -36,7 +37,8 @@ export function TransactionsPage({ fixedType }: Props) {
   const [params, setParams] = useSearchParams();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState(params.get('q') ?? '');
-  const [dialog, setDialog] = useState<{ open: boolean; tx?: Transaction | null; type?: TxType }>({ open: false });
+  const [dialog, setDialog] = useState<{ open: boolean; tx?: Transaction | null; type?: TxType; receipt?: { scan: ReceiptScan; file: File } | null }>({ open: false });
+  const [scanning, setScanning] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
   const copy = COPY[fixedType ?? 'all'];
 
@@ -87,7 +89,7 @@ export function TransactionsPage({ fixedType }: Props) {
   const exportCsv = async () => {
     try {
       const { type, accountId, categoryId, from, to, q } = filters;
-      saveBlob(await apiBlob(`/transactions/export.csv${toQuery({ type, accountId, categoryId, from, to, q })}`, { workspaceId: ws.id }), `budgetflow-${fixedType ?? 'transactions'}.csv`);
+      saveBlob(await apiBlob(`/transactions/export.csv${toQuery({ type, accountId, categoryId, from, to, q })}`, { workspaceId: ws.id }), `kontaa-${fixedType ?? 'transactions'}.csv`);
     } catch (e) {
       toast.error((e as Error).message);
     }
@@ -109,6 +111,11 @@ export function TransactionsPage({ fixedType }: Props) {
           <Button variant="neu" onClick={exportCsv} disabled={total === 0} title={total === 0 ? 'Nothing to export yet' : 'Download as CSV'}>
             <Download /> Export CSV
           </Button>
+          {writable && (
+            <Button variant="neu" onClick={() => setScanning(true)}>
+              <ScanLine /> Scan a receipt
+            </Button>
+          )}
           {writable && (
             <Button onClick={() => setDialog({ open: true, tx: null, type: fixedType ?? 'expense' })}>
               <Plus /> {fixedType === 'income' ? 'Record income' : fixedType === 'expense' ? 'Record expense' : 'Record transaction'}
@@ -198,7 +205,9 @@ export function TransactionsPage({ fixedType }: Props) {
         transaction={dialog.tx}
         defaultType={dialog.type}
         defaultAccountId={filters.accountId}
+        receipt={dialog.receipt}
       />
+      <ScanReceiptDialog open={scanning} onOpenChange={setScanning} onRead={(scan, file) => setDialog({ open: true, tx: null, type: scan.draft.type ?? fixedType ?? 'expense', receipt: { scan, file } })} />
       <TransactionDetail id={detailId} onClose={() => setDetailId(null)} onEdit={(t) => { setDetailId(null); setDialog({ open: true, tx: t }); }} />
     </div>
   );

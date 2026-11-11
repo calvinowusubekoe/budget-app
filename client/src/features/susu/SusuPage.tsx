@@ -35,8 +35,8 @@ export function SusuPage() {
       </header>
 
       <Alert tone="info">
-        <span className="block font-medium">BudgetFlow never holds or moves Susu money</span>
-        <span className="text-muted">You pay in and withdraw the way you always have. BudgetFlow only keeps the record you enter, and it isn’t counted as income or spending.</span>
+        <span className="block font-medium">Kontaa never holds or moves Susu money</span>
+        <span className="text-muted">You pay in and withdraw the way you always have. Kontaa only keeps the record you enter, and it isn’t counted as income or spending.</span>
       </Alert>
 
       <section aria-labelledby="personal-title" className="grid gap-4">

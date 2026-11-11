@@ -235,7 +235,8 @@ describe('AI assistant', () => {
 
   it('exposes no route that writes financial records', () => {
     const routes = aiRouter.stack.filter((l) => l.route).map((l) => `${Object.keys(l.route.methods)[0]} ${l.route.path}`);
-    expect(routes.sort()).toEqual(['delete /consent', 'get /status', 'patch /workspace', 'post /ask', 'post /consent'].sort());
+    // /receipts/scan only suggests fields; the person saves the transaction through the normal route.
+    expect(routes.sort()).toEqual(['delete /consent', 'get /status', 'patch /workspace', 'post /ask', 'post /consent', 'post /receipts/scan'].sort());
   });
 
   it('number check ignores years and counts, and normalises grouping', () => {

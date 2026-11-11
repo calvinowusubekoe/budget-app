@@ -79,7 +79,7 @@ export function AccountDialog({ open, onOpenChange, account }: { open: boolean; 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogTitle>{account ? 'Edit account' : 'Add an account'}</DialogTitle>
-        <DialogDescription>An account is a label for where money sits, like a MoMo wallet or bank account. BudgetFlow only keeps the record; it can’t see or move the money.</DialogDescription>
+        <DialogDescription>An account is a label for where money sits, like a MoMo wallet or bank account. Kontaa only keeps the record; it can’t see or move the money.</DialogDescription>
         <form onSubmit={onSubmit} noValidate className="mt-5 grid gap-4 sm:grid-cols-2">
           {general && <Alert tone="danger" className="sm:col-span-2">{general}</Alert>}
           <Field label="Account name" htmlFor="acc-name" error={formState.errors.name?.message} className="sm:col-span-2">

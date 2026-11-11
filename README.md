@@ -1,8 +1,8 @@
-# BudgetFlow
+# Kontaa
 
 A multi-currency financial tracking PWA for personal and business use, with Personal Susu and Group Susu record-keeping.
 
-**BudgetFlow manages financial information. It does not hold or move users' money.** Susu contributions and payouts always happen outside the app; BudgetFlow only records them. The only payment integration is for BudgetFlow's own subscriptions. See [docs/susu-business-rules.md](docs/susu-business-rules.md).
+**Kontaa manages financial information. It does not hold or move users' money.** Susu contributions and payouts always happen outside the app; Kontaa only records them. The only payment integration is for Kontaa's own subscriptions. See [docs/susu-business-rules.md](docs/susu-business-rules.md).
 
 ## Status
 

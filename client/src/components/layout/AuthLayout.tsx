@@ -8,7 +8,7 @@ export function AuthLayout({ title, subtitle, children, footer }: { title: strin
     <div className="flex min-h-dvh flex-col px-4 py-6">
       <Backdrop />
       <header className="mx-auto flex w-full max-w-md items-center justify-between">
-        <Link to="/" aria-label="BudgetFlow home">
+        <Link to="/" aria-label="Kontaa home">
           <Logo />
         </Link>
         <ThemeToggle />
@@ -22,7 +22,7 @@ export function AuthLayout({ title, subtitle, children, footer }: { title: strin
         {footer && <div className="mt-5 text-center text-sm text-muted">{footer}</div>}
       </main>
       <p className="mx-auto max-w-md text-center text-xs text-subtle">
-        BudgetFlow is a record-keeping tool. It is not a bank or wallet and never holds or moves your money.
+        Kontaa is a record-keeping tool. It is not a bank or wallet and never holds or moves your money.
       </p>
     </div>
   );

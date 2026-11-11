@@ -19,7 +19,7 @@ export async function exportCsv(req, res) {
   const rows = await svc.exportRows(req.workspace._id, req.valid.query);
   const stamp = new Date().toISOString().slice(0, 10);
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-  res.setHeader('Content-Disposition', `attachment; filename="budgetflow-transactions-${stamp}.csv"`);
+  res.setHeader('Content-Disposition', `attachment; filename="kontaa-transactions-${stamp}.csv"`);
   res.send(toCsv(rows));
 }
 

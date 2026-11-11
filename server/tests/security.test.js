@@ -78,7 +78,7 @@ describe('workspace isolation sweep', () => {
 
 describe('production configuration checks', () => {
   const good = {
-    CLIENT_URL: 'https://app.budgetflow.example',
+    CLIENT_URL: 'https://app.kontaa.example',
     COOKIE_SECURE: true,
     SMTP_HOST: 'smtp.example',
     JWT_ACCESS_SECRET: 'a'.repeat(64),

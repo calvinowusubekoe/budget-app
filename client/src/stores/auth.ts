@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { User } from '@/types/api';
 
-/** 'unreachable': the session couldn't be checked because BudgetFlow couldn't be reached (e.g. offline at startup). */
+/** 'unreachable': the session couldn't be checked because Kontaa couldn't be reached (e.g. offline at startup). */
 type Status = 'loading' | 'authenticated' | 'guest' | 'unreachable';
 
 interface AuthState {

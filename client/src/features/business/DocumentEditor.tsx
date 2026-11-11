@@ -147,7 +147,7 @@ export function DocumentEditor({ kind, open, onOpenChange, doc }: { kind: DocKin
               <div className="flex justify-between"><dt className="text-muted">Tax</dt><dd className="tabular">{preview.data ? formatMoney(preview.data.taxTotal, currency) : '—'}</dd></div>
               <div className="flex justify-between border-t border-[var(--line)] pt-1 text-base font-semibold"><dt>Total</dt><dd className="tabular">{preview.data ? formatMoney(preview.data.total, currency) : '—'}</dd></div>
             </dl>
-            <p className="text-xs text-subtle">Tax is the percentage you enter per item. BudgetFlow doesn’t apply tax rules for you.</p>
+            <p className="text-xs text-subtle">Tax is the percentage you enter per item. Kontaa doesn’t apply tax rules for you.</p>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label={isInvoice ? 'Payment terms (shown on the invoice)' : 'Terms (optional)'} htmlFor="de-terms"><Input id="de-terms" placeholder={isInvoice ? 'e.g. Pay by MoMo to 024 000 0000 within 14 days' : ''} value={terms} onChange={(e) => setTerms(e.target.value)} /></Field>

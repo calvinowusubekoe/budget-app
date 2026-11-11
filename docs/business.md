@@ -2,7 +2,7 @@
 
 These tools are available in business workspaces only. The server refuses them in personal workspaces, and the navigation shows a Business section only where it applies.
 
-BudgetFlow is practical bookkeeping. It is **not** certified accounting or tax software, and every report says so. Tax on invoices and bills is a percentage the user enters per line; BudgetFlow doesn't apply tax rules.
+Kontaa is practical bookkeeping. It is **not** certified accounting or tax software, and every report says so. Tax on invoices and bills is a percentage the user enters per line; Kontaa doesn't apply tax rules.
 
 ## Customers and suppliers
 
@@ -32,7 +32,7 @@ BudgetFlow is practical bookkeeping. It is **not** certified accounting or tax s
 - **Duplicate protection:** the payment endpoint accepts an `Idempotency-Key`, and the editor sends one per dialog, so a double click records once.
 - **Linked transactions:** these can't be edited or deleted from Transactions; the screen points to the document. They can still be marked reconciled against a statement.
 - **Removing a payment** needs a reason. It soft-deletes the linked transaction and keeps the payment on the document's history, struck through.
-- **No money movement:** BudgetFlow never collects or pays money. A payment record describes money that moved outside BudgetFlow.
+- **No money movement:** Kontaa never collects or pays money. A payment record describes money that moved outside Kontaa.
 
 ## Reports (cash basis)
 
@@ -45,4 +45,4 @@ Unpaid invoices are not income on a cash basis. They appear under receivables un
 
 ## PDFs
 
-PDFs are generated on the server with pdfkit's built-in Helvetica. Those fonts have no glyph for some currency symbols (such as ₵), so amounts print with ISO codes, for example "GHS 1,250.00", grouped without floating-point conversion. Each PDF notes that BudgetFlow doesn't process payments.
+PDFs are generated on the server with pdfkit's built-in Helvetica. Those fonts have no glyph for some currency symbols (such as ₵), so amounts print with ISO codes, for example "GHS 1,250.00", grouped without floating-point conversion. Each PDF notes that Kontaa doesn't process payments.

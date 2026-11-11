@@ -3,7 +3,7 @@ import { ApiError } from '../../../utils/ApiError.js';
 import { logger } from '../../../utils/logger.js';
 
 export const providerUnavailable = (label) =>
-  new ApiError(502, 'PROVIDER_UNAVAILABLE', `${label} didn't respond properly. No money has moved from BudgetFlow's side; try again in a minute.`);
+  new ApiError(502, 'PROVIDER_UNAVAILABLE', `${label} didn't respond properly. No money has moved from Kontaa's side; try again in a minute.`);
 
 /**
  * JSON call to a payment provider with a timeout. Secret keys go in the

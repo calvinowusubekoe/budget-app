@@ -16,8 +16,8 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'BudgetFlow',
-        short_name: 'BudgetFlow',
+        name: 'Kontaa',
+        short_name: 'Kontaa',
         description: 'Track income, expenses, budgets, savings and Susu records across currencies.',
         lang: 'en-GH',
         start_url: '/',
@@ -43,7 +43,7 @@ export default defineConfig({
         runtimeCaching: [],
         cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
-        // Background Sync: wakes open BudgetFlow tabs to send queued records (see public/sw-sync.js).
+        // Background Sync: wakes open Kontaa tabs to send queued records (see public/sw-sync.js).
         importScripts: ['sw-sync.js'],
       },
       devOptions: { enabled: false },

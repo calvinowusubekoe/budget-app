@@ -45,7 +45,7 @@ export function ExchangeRatesPage() {
       <header>
         <h1 className="text-[28px] font-semibold">Exchange rates</h1>
         <p className="max-w-2xl text-muted">
-          Totals in this workspace are reported in {base}. When you record money in another currency, BudgetFlow uses the latest rate here on or before that date and saves a copy with the record. Changing a rate later never changes past records.
+          Totals in this workspace are reported in {base}. When you record money in another currency, Kontaa uses the latest rate here on or before that date and saves a copy with the record. Changing a rate later never changes past records.
         </p>
       </header>
 

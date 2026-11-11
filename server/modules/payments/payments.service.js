@@ -13,7 +13,7 @@ import { Payment, PaymentWebhookEvent } from './payment.models.js';
 import { getProvider } from './providers/index.js';
 
 /**
- * BudgetFlow subscription payments, and nothing else.
+ * Kontaa subscription payments, and nothing else.
  *
  * A plan is only ever activated by applyVerification(), and only with data
  * fetched from the provider's API by this server: never from the browser,
@@ -94,7 +94,7 @@ export async function startCheckout(workspace, { plan, billingPeriod, provider: 
       email: actor.email,
       name: actor.name,
       callbackUrl: `${env.clientUrl}/settings/billing?checkout=${providerKey}`,
-      metadata: { purpose: 'budgetflow_subscription', plan, billingPeriod, workspaceId: String(workspace._id) },
+      metadata: { purpose: 'kontaa_subscription', plan, billingPeriod, workspaceId: String(workspace._id) },
     });
     payment.checkoutUrl = checkoutUrl;
     await payment.save();
@@ -146,7 +146,7 @@ export async function applyVerification(payment, v, { via }, now = new Date()) {
       );
       if (flagged) {
         await recordAudit({ workspaceId: payment.workspaceId, action: 'payment.mismatch', entityType: 'Payment', entityId: payment._id, metadata: { reference: payment.reference, via, reported: `${v.currency} ${v.amount}` } });
-        await tellManagers(flagged, { type: 'payment_review', title: 'A payment needs checking', body: "The amount the provider confirmed doesn't match the plan price, so the plan wasn't changed. Contact BudgetFlow support with the payment reference.", dedupeKey: `pay-review-${payment._id}` });
+        await tellManagers(flagged, { type: 'payment_review', title: 'A payment needs checking', body: "The amount the provider confirmed doesn't match the plan price, so the plan wasn't changed. Contact Kontaa support with the payment reference.", dedupeKey: `pay-review-${payment._id}` });
       }
       return flagged ?? Payment.findById(payment._id);
     }
@@ -198,7 +198,7 @@ export async function applyVerification(payment, v, { via }, now = new Date()) {
       { new: true },
     );
     if (updated && v.status === 'failed') {
-      await tellManagers(updated, { type: 'payment_failed', title: "A plan payment didn't go through", body: 'Nothing was charged by BudgetFlow. You can try again from Plan and billing.', dedupeKey: `pay-fail-${payment._id}` });
+      await tellManagers(updated, { type: 'payment_failed', title: "A plan payment didn't go through", body: 'Nothing was charged by Kontaa. You can try again from Plan and billing.', dedupeKey: `pay-fail-${payment._id}` });
     }
     return updated ?? Payment.findById(payment._id);
   }

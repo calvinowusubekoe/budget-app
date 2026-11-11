@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { api } from '@/services/api';
+import { api, apiBlob, saveBlob } from '@/services/api';
 import { queryClient } from '@/app/queryClient';
 import { useAuth } from '@/stores/auth';
 import type { GroupActivity, GroupCapability, GroupContribution, GroupCycle, GroupMember, GroupPayout, GroupReport, SusuGroup } from '@/types/api';
@@ -78,3 +78,20 @@ export function useGroupMutations(id: string) {
 
 export const ROLE_LABEL: Record<string, string> = { organizer: 'Organiser', assistant: 'Assistant organiser', member: 'Member' };
 export const STATUS_LABEL: Record<string, string> = { recorded: 'Awaiting confirmation', confirmed: 'Confirmed by member', disputed: 'Disputed', cancelled: 'Cancelled' };
+
+/** Attach a receipt or screenshot of the external payment to a contribution or payout record. */
+export function useRecordProof(groupId: string) {
+  return useMutation({
+    mutationFn: ({ kind, recordId, file }: { kind: 'contribution' | 'payout'; recordId: string; file: File }) => {
+      const form = new FormData();
+      form.append('file', file);
+      return api(`/susu/groups/${groupId}/${kind === 'contribution' ? 'contributions' : 'payouts'}/${recordId}/proof`, { method: 'POST', form });
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['susu-groups', groupId] }),
+  });
+}
+
+/** Downloads the proof, like every other attachment in Kontaa. */
+export async function downloadRecordProof(groupId: string, kind: 'contribution' | 'payout', recordId: string, name: string) {
+  saveBlob(await apiBlob(`/susu/groups/${groupId}/${kind === 'contribution' ? 'contributions' : 'payouts'}/${recordId}/proof`), name);
+}

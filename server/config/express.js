@@ -36,7 +36,7 @@ export function createApp() {
   app.use(sanitizeInput);
 
   if (env.apiDocs) {
-    app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec, { customSiteTitle: 'BudgetFlow API' }));
+    app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec, { customSiteTitle: 'Kontaa API' }));
     app.get('/api/openapi.json', (_req, res) => res.json(openApiSpec));
   }
 

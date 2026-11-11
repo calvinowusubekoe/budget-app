@@ -74,7 +74,7 @@ function UserMenu() {
       <DialogContent>
         <DialogTitle>Sign out with unsynced records?</DialogTitle>
         <DialogDescription>
-          {unsent} record{unsent > 1 ? 's' : ''} on this device haven't reached BudgetFlow yet. Signing out deletes {unsent > 1 ? 'them' : 'it'} from this device, so nobody else using it can see {unsent > 1 ? 'them' : 'it'}.
+          {unsent} record{unsent > 1 ? 's' : ''} on this device haven't reached Kontaa yet. Signing out deletes {unsent > 1 ? 'them' : 'it'} from this device, so nobody else using it can see {unsent > 1 ? 'them' : 'it'}.
         </DialogDescription>
         <div className="mt-5 flex flex-wrap justify-end gap-2">
           <Button variant="neu" onClick={() => setConfirm(false)}>Stay signed in</Button>
@@ -145,12 +145,12 @@ export function AppShell() {
             );
           })}
         </nav>
-        <p className="px-3 text-[11px] leading-snug text-subtle">BudgetFlow keeps records of your money. It never holds or moves it.</p>
+        <p className="px-3 text-[11px] leading-snug text-subtle">Kontaa keeps records of your money. It never holds or moves it.</p>
       </aside>
 
       <div className="flex min-w-0 flex-col">
         <header className="glass sticky top-0 z-30 flex items-center gap-3 rounded-none border-x-0 border-t-0 px-4 py-3 sm:px-6">
-          <Link to="/" className="lg:hidden" aria-label="BudgetFlow home">
+          <Link to="/" className="lg:hidden" aria-label="Kontaa home">
             <Logo className="[&>span]:hidden sm:[&>span]:inline" />
           </Link>
           <WorkspaceSwitcher className="max-w-60 lg:hidden" />
@@ -167,7 +167,7 @@ export function AppShell() {
           <Suspense fallback={<div className="grid min-h-[40vh] place-items-center"><Spinner label="Loading" /></div>}>
             <Outlet />
           </Suspense>
- 00009       </main>
+        </main>
       </div>
 
       <nav aria-label="Main" className="glass-strong fixed inset-x-3 bottom-3 z-30 flex justify-around rounded-2xl p-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] lg:hidden">

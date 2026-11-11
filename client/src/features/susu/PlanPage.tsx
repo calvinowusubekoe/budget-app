@@ -182,7 +182,7 @@ function RecordPanel({ plan: p }: { plan: SusuPlan }) {
               </button>
             ))}
           </div>
-          <p className="text-xs text-subtle">Record what already happened. Nothing is paid through BudgetFlow.</p>
+          <p className="text-xs text-subtle">Record what already happened. Nothing is paid through Kontaa.</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-[1fr_11rem]">
           <Field label={`Amount (${p.currency})`} htmlFor="se-amount" error={errors.amount}>

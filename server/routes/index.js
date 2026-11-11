@@ -53,7 +53,7 @@ apiRouter.use('/susu/invitations', susuInvitationsRouter);
 apiRouter.use('/susu', susuRouter);
 // Business workspaces only: customers, suppliers, invoices, bills and reports.
 apiRouter.use('/business', businessRouter);
-// BudgetFlow's own plans: the only place money is taken (webhooks are mounted in config/express.js).
+// Kontaa's own plans: the only place money is taken (webhooks are mounted in config/express.js).
 apiRouter.use('/subscriptions', subscriptionsRouter);
 // Optional, read-only AI assistant over deterministic figures.
 apiRouter.use('/ai', aiRouter);

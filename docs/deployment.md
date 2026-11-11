@@ -1,6 +1,6 @@
 # Deployment and operations
 
-BudgetFlow is two parts:
+Kontaa is two parts:
 - **The API:** Node 20+ running `server/server.js`.
 - **The client:** static files built into `client/dist`.
 
@@ -65,10 +65,10 @@ Example nginx server block:
 ```nginx
 server {
   listen 443 ssl http2;
-  server_name app.budgetflow.example;
+  server_name app.kontaa.example;
   # ssl_certificate / ssl_certificate_key …
 
-  root /srv/budgetflow/client/dist;
+  root /srv/kontaa/client/dist;
   client_max_body_size 6m;                       # MAX_UPLOAD_MB + headroom
   gzip on; gzip_types text/css application/javascript application/json image/svg+xml;
 
@@ -120,8 +120,8 @@ Test with test keys before going live. A test key logs a warning at startup.
 **Self-hosted MongoDB:** a nightly dump, kept for 30 days, with weekly copies stored off-site:
 
 ```bash
-mongodump --uri="$MONGODB_URI" --gzip --archive="/backups/budgetflow-$(date +%F).archive.gz"
-find /backups -name 'budgetflow-*.archive.gz' -mtime +30 -delete
+mongodump --uri="$MONGODB_URI" --gzip --archive="/backups/kontaa-$(date +%F).archive.gz"
+find /backups -name 'kontaa-*.archive.gz' -mtime +30 -delete
 ```
 
 **Restore** (rehearse this quarterly on a staging copy):
@@ -129,7 +129,7 @@ find /backups -name 'budgetflow-*.archive.gz' -mtime +30 -delete
 1. Stop the API, or put it in maintenance at the proxy.
 2. Restore the database. `--drop` replaces the existing collections:
    ```bash
-   mongorestore --uri="$MONGODB_URI" --gzip --archive=/backups/budgetflow-YYYY-MM-DD.archive.gz --drop
+   mongorestore --uri="$MONGODB_URI" --gzip --archive=/backups/kontaa-YYYY-MM-DD.archive.gz --drop
    ```
 3. Restore `UPLOAD_DIR` from the snapshot taken at the same time.
 4. Start the API. Indexes are created on start, and the scheduler catches up on recurring items and payment reconciliation by itself. Recurring occurrences have fixed idempotency keys, so nothing is created twice.
@@ -149,7 +149,7 @@ find /backups -name 'budgetflow-*.archive.gz' -mtime +30 -delete
 1. Run `npm ci && npm test && npm run build`.
 2. Deploy the API first: database changes are additive.
 3. Then deploy `client/dist`.
-4. Open browsers get "A new version of BudgetFlow is ready" and reload when the person chooses. If a release is broken, the recovery script in `index.html` moves people onto the next fixed release as soon as it's deployed.
+4. Open browsers get "A new version of Kontaa is ready" and reload when the person chooses. If a release is broken, the recovery script in `index.html` moves people onto the next fixed release as soon as it's deployed.
 5. Roll back by redeploying the previous `dist` and API build.
 
 ## 8. Go-live checklist

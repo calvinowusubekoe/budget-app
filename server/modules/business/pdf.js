@@ -22,7 +22,7 @@ export function money(amount, currency) {
 
 function toBuffer(build) {
   return new Promise((resolve, reject) => {
-    const doc = new PDFDocument({ size: 'A4', margin: 50, info: { Producer: 'BudgetFlow', Creator: 'BudgetFlow' } });
+    const doc = new PDFDocument({ size: 'A4', margin: 50, info: { Producer: 'Kontaa', Creator: 'Kontaa' } });
     const chunks = [];
     doc.on('data', (c) => chunks.push(c));
     doc.on('end', () => resolve(Buffer.concat(chunks)));
@@ -88,7 +88,7 @@ export function documentPdf(d, business) {
     y += 16;
     if (d.terms) doc.font('Helvetica-Bold').fillColor(INK).text('Terms', 50, y).font('Helvetica').text(d.terms, { width: 495 });
     if (d.notes) doc.moveDown().font('Helvetica-Bold').text('Notes').font('Helvetica').text(d.notes, { width: 495 });
-    doc.fontSize(8).fillColor(MUTED).text('Prepared with BudgetFlow, a record-keeping tool. BudgetFlow does not process payments.', 50, 780, { width: 495, align: 'center' });
+    doc.fontSize(8).fillColor(MUTED).text('Prepared with Kontaa, a record-keeping tool. Kontaa does not process payments.', 50, 780, { width: 495, align: 'center' });
   });
 }
 

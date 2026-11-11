@@ -13,7 +13,7 @@ import { balances } from './documents.service.js';
  * receivables and payables. Practical bookkeeping, not certified accounts.
  */
 
-export const BASIS_NOTE = 'Cash basis: figures come from income and expenses recorded in BudgetFlow. Not a certified financial statement or tax return.';
+export const BASIS_NOTE = 'Cash basis: figures come from income and expenses recorded in Kontaa. Not a certified financial statement or tax return.';
 
 const pct = (part, whole) => (new D(whole).isZero() ? null : new D(part).div(whole).times(100).toFixed(1));
 

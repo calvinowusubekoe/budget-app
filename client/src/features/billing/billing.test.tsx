@@ -11,7 +11,7 @@ const ws = (role: 'owner' | 'admin') => ({
   id: 'w1', name: 'Personal', type: 'personal', baseCurrency: 'GHS', role, status: 'active',
   permissions: role === 'owner' ? ['workspace.read', 'workspace.update', 'billing.manage', 'records.read'] : ['workspace.read', 'workspace.update', 'records.read'],
 });
-const limits = { accounts: 5, budgets: 5, savingsGoals: 3, debts: 5, recurring: 5, susuPlans: 2, invoicesPerMonth: 10, billsPerMonth: 10, aiQuestionsPerMonth: 20 };
+const limits = { accounts: 5, budgets: 5, savingsGoals: 3, debts: 5, recurring: 5, susuPlans: 2, invoicesPerMonth: 10, billsPerMonth: 10, aiQuestionsPerMonth: 20, receiptScansPerMonth: 10 };
 const none = Object.fromEntries(Object.keys(limits).map((k) => [k, null]));
 const plans = {
   plans: [

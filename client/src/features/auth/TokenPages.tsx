@@ -74,7 +74,7 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <AuthLayout title="Choose a new password" subtitle="This signs you out of BudgetFlow on every device.">
+    <AuthLayout title="Choose a new password" subtitle="This signs you out of Kontaa on every device.">
       <form onSubmit={handleSubmit((v) => reset.mutate(v.password))} noValidate className="grid gap-4">
         {reset.error && (
           <Alert tone="danger" action={<Link to="/forgot-password" className="text-sm font-medium text-primary">New link</Link>}>

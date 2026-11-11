@@ -197,7 +197,7 @@ function DebtDialog({ open, onOpenChange, debt }: { open: boolean; onOpenChange:
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogTitle>{debt ? 'Edit debt' : 'Add a debt'}</DialogTitle>
-        <DialogDescription>BudgetFlow keeps the record. Payments still happen between you and the other party.</DialogDescription>
+        <DialogDescription>Kontaa keeps the record. Payments still happen between you and the other party.</DialogDescription>
         <form onSubmit={onSubmit} noValidate className="mt-5 grid gap-4 sm:grid-cols-2">
           {!debt && (
             <Field label="Which way?" htmlFor="d-dir" className="sm:col-span-2">

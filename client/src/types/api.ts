@@ -545,6 +545,8 @@ interface GroupRecordBase {
   events: RecordEvent[];
   canRespond: boolean;
   selfRecorded: boolean;
+  /** A receipt or screenshot of the external payment, if someone added one. */
+  proof: { name: string; mimeType: string; size: number; uploadedAt: string } | null;
   createdAt: string;
 }
 
@@ -652,7 +654,7 @@ export interface BizDocument {
   status: 'draft' | 'issued' | 'void';
   displayStatus: DocDisplayStatus;
   daysOverdue: number;
-  payments: { id: string; amount: string; date: string; account: { id: string; name: string }; transactionId: string; removed: boolean; removeReason: string }[];
+  payments: { id: string; amount: string; date: string; account: { id: string; name: string }; transactionId: string; receiptCount: number; removed: boolean; removeReason: string }[];
   notes: string;
   terms: string;
   voidReason: string;
@@ -704,7 +706,7 @@ export interface BusinessOverview {
 
 export type PlanKey = 'free' | 'personal_pro' | 'business_pro';
 export type BillingPeriod = 'monthly' | 'yearly';
-export type LimitKey = 'accounts' | 'budgets' | 'savingsGoals' | 'debts' | 'recurring' | 'susuPlans' | 'invoicesPerMonth' | 'billsPerMonth' | 'aiQuestionsPerMonth';
+export type LimitKey = 'accounts' | 'budgets' | 'savingsGoals' | 'debts' | 'recurring' | 'susuPlans' | 'invoicesPerMonth' | 'billsPerMonth' | 'aiQuestionsPerMonth' | 'receiptScansPerMonth';
 export type PaymentProviderKey = 'paystack' | 'flutterwave';
 
 export interface Plan {
@@ -880,6 +882,7 @@ export interface AiStatus {
   consentVersion: string;
   workspaceEnabled: boolean;
   usage: { used: number; limit: number | null };
+  scans: { used: number; limit: number | null };
 }
 
 export interface AiAnswer {
@@ -890,4 +893,27 @@ export interface AiAnswer {
   model: string;
   period: { from: string; to: string };
   insights: { title: string; detail: string }[];
+}
+
+/* ---------------- receipt scanning ---------------- */
+
+export interface ReceiptDraft {
+  type: 'income' | 'expense' | null;
+  amount: string | null;
+  currency: string | null;
+  date: string | null;
+  counterparty: string | null;
+  description: string | null;
+  reference: string | null;
+  fees: string | null;
+  categoryId: string | null;
+  categoryName: string | null;
+  documentKind: 'receipt' | 'invoice' | 'mobile_money' | 'bank_alert' | 'other';
+}
+
+export interface ReceiptScan {
+  kind: 'ai_suggestion';
+  draft: ReceiptDraft;
+  warnings: string[];
+  possibleDuplicates: { id: string; date: string; description: string; amount: string; currency: string; type: TxType }[];
 }

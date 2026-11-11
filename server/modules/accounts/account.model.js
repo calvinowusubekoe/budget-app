@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 export const ACCOUNT_TYPES = ['cash', 'bank', 'mobile_money', 'savings', 'other'];
 
 /**
- * A tracking account: a label for where money sits outside BudgetFlow.
- * BudgetFlow cannot see, access or move the real funds. The balance is
+ * A tracking account: a label for where money sits outside Kontaa.
+ * Kontaa cannot see, access or move the real funds. The balance is
  * derived from the opening balance plus recorded transactions.
  */
 const accountSchema = new mongoose.Schema(

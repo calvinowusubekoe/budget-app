@@ -269,7 +269,7 @@ describe('verification', () => {
     await checkout(u.h).expect(201);
   });
 
-  it('ignores signed webhooks for payments BudgetFlow did not start', async () => {
+  it('ignores signed webhooks for payments Kontaa did not start', async () => {
     await paystackHook('charge.success', { id: 99, reference: 'someone-elses-ref' }).expect(200);
     expect(await Payment.countDocuments()).toBe(0);
     expect(await Subscription.countDocuments()).toBe(0);

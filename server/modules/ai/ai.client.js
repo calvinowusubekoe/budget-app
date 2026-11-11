@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { env } from '../../config/env.js';
 
 /**
- * The only place BudgetFlow talks to the AI provider. Tests replace the
+ * The only place Kontaa talks to the AI provider. Tests replace the
  * client with setAiClient(); everything else calls getAiClient().
  */
 let client = null;

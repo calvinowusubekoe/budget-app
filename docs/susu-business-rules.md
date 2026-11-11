@@ -2,9 +2,9 @@
 
 These rules are permanent product constraints. Changing any of them requires a separately approved product and legal scope change. They are not engineering decisions.
 
-## BudgetFlow never handles Susu money
+## Kontaa never handles Susu money
 
-BudgetFlow must never:
+Kontaa must never:
 
 - collect Susu contributions
 - pool or hold Susu funds
@@ -13,7 +13,7 @@ BudgetFlow must never:
 - create a withdrawable Susu balance or any wallet
 - integrate a payment gateway for Susu contributions or payouts
 
-There must be no dormant Susu payment endpoints, "future-ready" gateway abstractions, or simulated transfers. Members and organisers transact outside BudgetFlow. The app only records what authorised users enter.
+There must be no dormant Susu payment endpoints, "future-ready" gateway abstractions, or simulated transfers. Members and organisers transact outside Kontaa. The app only records what authorised users enter.
 
 ## Language and meaning
 
@@ -25,8 +25,8 @@ There must be no dormant Susu payment endpoints, "future-ready" gateway abstract
 ## Reporting separation
 
 - Personal Susu contributions are not expenses, and withdrawals are not income. No income or expense transactions are created from Susu records automatically.
-- Group contributions and payouts never appear in an individual's income or expense totals, or in BudgetFlow business revenue.
-- Analytics keep these apart: tracked income and expenses, account transfers, savings allocations, Personal Susu, Group Susu, and BudgetFlow subscription payments.
+- Group contributions and payouts never appear in an individual's income or expense totals, or in Kontaa business revenue.
+- Analytics keep these apart: tracked income and expenses, account transfers, savings allocations, Personal Susu, Group Susu, and Kontaa subscription payments.
 
 ## Record integrity
 
@@ -35,7 +35,7 @@ There must be no dormant Susu payment endpoints, "future-ready" gateway abstract
 
 ## Subscriptions are separate
 
-The only payment integration is for BudgetFlow's own subscription plans, through an approved provider (Paystack or Flutterwave). A subscription is activated only after server-side webhook signature verification and an independent check of the transaction with the provider.
+The only payment integration is for Kontaa's own subscription plans, through an approved provider (Paystack or Flutterwave). A subscription is activated only after server-side webhook signature verification and an independent check of the transaction with the provider.
 
 ## How Personal Susu applies these rules
 

@@ -17,7 +17,7 @@ import { assertWithinLimit } from '../subscriptions/entitlements.js';
 
 /** Upper bound per run, so a long-paused schedule can't flood the ledger in one go. */
 export const MAX_PER_RUN = 24;
-const SYSTEM_CTX = { ip: '', userAgent: 'BudgetFlow scheduler' };
+const SYSTEM_CTX = { ip: '', userAgent: 'Kontaa scheduler' };
 const clientRef = (id, date) => `rec-${id}-${date}`;
 
 const dateOf = (s, n) => occurrence(toYmd(s.anchorDate), s.frequency, s.interval, n);

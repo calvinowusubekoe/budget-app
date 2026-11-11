@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
-import { AlertTriangle, ArrowLeft, Check, CheckCircle2, ClipboardList, History, Mail, Plus, Settings2, ShieldCheck, Undo2, UserPlus, UsersRound, X } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Check, CheckCircle2, ClipboardList, History, Mail, Paperclip, Plus, Settings2, ShieldCheck, Undo2, Upload, UserPlus, UsersRound, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
@@ -13,7 +13,7 @@ import { amountError, cleanAmount, formatMoney, formatYmd, isZero, todayYmd } fr
 import { ApiError } from '@/services/api';
 import type { CellState, GroupContribution, GroupCycle, GroupMember, GroupPayout, GroupReport, RecordEvent, SusuGroup } from '@/types/api';
 import { describeFrequency } from './hooks';
-import { can, ROLE_LABEL, STATUS_LABEL, useGroup, useGroupActivity, useGroupContributions, useGroupCycles, useGroupMembers, useGroupMutations, useGroupPayouts, useGroupReport } from './groupHooks';
+import { can, ROLE_LABEL, STATUS_LABEL, useGroup, useGroupActivity, useGroupContributions, useGroupCycles, useGroupMembers, useGroupMutations, useGroupPayouts, useGroupReport, useRecordProof, downloadRecordProof } from './groupHooks';
 
 type Tab = 'overview' | 'records' | 'payouts' | 'members' | 'reports' | 'activity' | 'settings';
 const TABS: { id: Tab; label: string; show?: (g: SusuGroup) => boolean }[] = [
@@ -60,7 +60,7 @@ export function GroupPage() {
 
       <Alert tone="info">
         <span className="block font-medium">Records only</span>
-        <span className="text-muted">Members pay and collect among themselves, the way the group agrees. BudgetFlow records what organisers enter and lets each member confirm or dispute it. It never collects, holds or pays out money.</span>
+        <span className="text-muted">Members pay and collect among themselves, the way the group agrees. Kontaa records what organisers enter and lets each member confirm or dispute it. It never collects, holds or pays out money.</span>
       </Alert>
 
       <nav aria-label="Group sections" className="-mx-1 overflow-x-auto px-1">
@@ -181,7 +181,7 @@ function Overview({ g }: { g: SusuGroup }) {
             <Stat label="Outstanding" value={formatMoney(r.totals.outstanding, r.currency)} danger={!isZero(r.totals.outstanding)} />
             <Stat label="Payouts confirmed" value={`${r.totals.payoutsConfirmed} of ${r.totals.cycles}`} />
           </dl>
-          <p className="mt-3 text-xs text-subtle">The expected amount is what the schedule says should be collected. It isn’t money BudgetFlow holds.</p>
+          <p className="mt-3 text-xs text-subtle">The expected amount is what the schedule says should be collected. It isn’t money Kontaa holds.</p>
         </Card>
       </div>
 
@@ -298,7 +298,7 @@ function RecordContributionDialog({ g, cycle, member, onClose }: { g: SusuGroup;
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent>
         <DialogTitle>Record {member.displayName}’s contribution</DialogTitle>
-        <DialogDescription>For cycle #{cycle.number}. Record what {member.displayName} paid outside BudgetFlow. {member.registered ? 'They’ll be asked to confirm it.' : 'They have no account, so it stays unconfirmed.'}</DialogDescription>
+        <DialogDescription>For cycle #{cycle.number}. Record what {member.displayName} paid outside Kontaa. {member.registered ? 'They’ll be asked to confirm it.' : 'They have no account, so it stays unconfirmed.'}</DialogDescription>
         <form className="mt-4 grid gap-4" noValidate onSubmit={(e) => {
           e.preventDefault();
           const v = cleanAmount(amount);
@@ -354,6 +354,7 @@ function RecordRow({ g, record, registered }: { g: SusuGroup; record: GroupContr
           </>
         )}
         {canCancel && <Button size="sm" variant="ghost" onClick={() => { setPrompt('cancel'); setReason(''); }}><X /> Cancel record</Button>}
+        <ProofControl g={g} record={record} canAttach={record.status !== 'cancelled' && (canManage || record.canRespond || (isPayout ? (record as GroupPayout).recipient.id : (record as GroupContribution).member.id) === g.me?.memberId)} />
         <EventHistory events={record.events} />
       </div>
       {prompt && (
@@ -403,7 +404,7 @@ function Payouts({ g }: { g: SusuGroup }) {
       <CardHeader>
         <div>
           <CardTitle>Payouts</CardTitle>
-          <CardDescription>A record of each payout made outside BudgetFlow. The recipient confirms it from their account. A confirmed payout is the recipient’s acknowledgement, not a bank or MoMo check.</CardDescription>
+          <CardDescription>A record of each payout made outside Kontaa. The recipient confirms it from their account. A confirmed payout is the recipient’s acknowledgement, not a bank or MoMo check.</CardDescription>
         </div>
       </CardHeader>
       {active.length === 0 ? <p className="text-sm text-muted">No cycles yet.</p> : (
@@ -439,7 +440,7 @@ function RecordPayoutDialog({ g, cycle, onClose }: { g: SusuGroup; cycle: GroupC
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent>
         <DialogTitle>Record payout to {cycle.recipient.displayName}</DialogTitle>
-        <DialogDescription>Record a payout that has already been made, outside BudgetFlow. The schedule expected {formatMoney(cycle.expectedPool, g.currency)}; enter what was actually handed over.</DialogDescription>
+        <DialogDescription>Record a payout that has already been made, outside Kontaa. The schedule expected {formatMoney(cycle.expectedPool, g.currency)}; enter what was actually handed over.</DialogDescription>
         <form className="mt-4 grid gap-4" noValidate onSubmit={(e) => {
           e.preventDefault();
           const v = cleanAmount(amount);
@@ -451,7 +452,7 @@ function RecordPayoutDialog({ g, cycle, onClose }: { g: SusuGroup; cycle: GroupC
             <Field label={`Amount paid out (${g.currency})`} htmlFor="gp-amt" error={error}><Input id="gp-amt" inputMode="decimal" className="tabular" value={amount} onChange={(e) => setAmount(e.target.value)} /></Field>
             <Field label="Paid out on" htmlFor="gp-date"><Input id="gp-date" type="date" max={todayYmd()} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
           </div>
-          <Field label="How it was paid (optional)" htmlFor="gp-det" hint="For the group’s reference, e.g. “Cash at Sunday meeting”. BudgetFlow doesn’t check it."><Input id="gp-det" value={details} onChange={(e) => setDetails(e.target.value)} maxLength={200} /></Field>
+          <Field label="How it was paid (optional)" htmlFor="gp-det" hint="For the group’s reference, e.g. “Cash at Sunday meeting”. Kontaa doesn’t check it."><Input id="gp-det" value={details} onChange={(e) => setDetails(e.target.value)} maxLength={200} /></Field>
           <div className="flex justify-end gap-2"><Button type="button" variant="ghost" onClick={onClose}>Cancel</Button><Button type="submit" loading={m.recordPayout.isPending}>Record payout</Button></div>
         </form>
       </DialogContent>
@@ -737,5 +738,33 @@ function Settings({ g }: { g: SusuGroup }) {
         </div>
       </Card>
     </div>
+  );
+}
+
+/** A screenshot or receipt of the payment made outside Kontaa: evidence for members, not something Kontaa verifies. */
+function ProofControl({ g, record, canAttach }: { g: SusuGroup; record: GroupContribution | GroupPayout; canAttach: boolean }) {
+  const proof = useRecordProof(g.id);
+  const input = useRef<HTMLInputElement>(null);
+  const pick = (f?: File) => {
+    if (!f) return;
+    if (f.size > 5 * 1024 * 1024) return toast.error('Files can be up to 5 MB.');
+    proof.mutate({ kind: record.kind, recordId: record.id, file: f }, { onSuccess: () => toast.success(record.proof ? 'Proof replaced' : 'Proof added'), onError: (e) => toast.error(errMsg(e)) });
+  };
+  return (
+    <>
+      {record.proof && (
+        <Button size="sm" variant="ghost" onClick={() => downloadRecordProof(g.id, record.kind, record.id, record.proof!.name).catch((e: Error) => toast.error(e.message))}>
+          <Paperclip /> Proof
+        </Button>
+      )}
+      {canAttach && (
+        <>
+          <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" aria-label={`Proof file for ${record.kind}`} onChange={(e) => pick(e.target.files?.[0])} />
+          <Button size="sm" variant="ghost" loading={proof.isPending} onClick={() => input.current?.click()}>
+            <Upload /> {record.proof ? 'Replace proof' : 'Add proof'}
+          </Button>
+        </>
+      )}
+    </>
   );
 }

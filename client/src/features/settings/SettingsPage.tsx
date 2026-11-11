@@ -206,7 +206,7 @@ function PrivacyCard() {
     mutationFn: () => api<unknown>('/users/me/export'),
     onSuccess: (data) => {
       const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
-      const a = Object.assign(document.createElement('a'), { href: url, download: 'budgetflow-profile.json' });
+      const a = Object.assign(document.createElement('a'), { href: url, download: 'kontaa-profile.json' });
       a.click();
       URL.revokeObjectURL(url);
     },
@@ -218,7 +218,7 @@ function PrivacyCard() {
         <div>
           <CardTitle>Privacy</CardTitle>
           <CardDescription>
-            Read the <Link to="/legal/privacy" className="text-primary underline">privacy notice</Link> to see what BudgetFlow stores and why.
+            Read the <Link to="/legal/privacy" className="text-primary underline">privacy notice</Link> to see what Kontaa stores and why.
           </CardDescription>
         </div>
       </CardHeader>

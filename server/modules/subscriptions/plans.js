@@ -2,7 +2,7 @@ import { env } from '../../config/env.js';
 import { AMOUNT_PATTERN, fitsCurrency, isPositive, normalize } from '../../utils/money.js';
 
 /**
- * BudgetFlow's own software plans. Paid plans are tied to a workspace type, so
+ * Kontaa's own software plans. Paid plans are tied to a workspace type, so
  * a personal workspace can only buy Personal Pro and a business workspace only
  * Business Pro.
  *
@@ -25,21 +25,22 @@ export const LIMIT_LABELS = {
   invoicesPerMonth: 'invoices a month',
   billsPerMonth: 'bills a month',
   aiQuestionsPerMonth: 'AI assistant questions a month',
+  receiptScansPerMonth: 'receipt scans a month',
 };
 const LIMIT_KEYS = Object.keys(LIMIT_LABELS);
 const unlimited = Object.fromEntries(LIMIT_KEYS.map((k) => [k, null]));
 
 const DEFAULT_LIMITS = {
-  free: { accounts: 5, budgets: 5, savingsGoals: 3, debts: 5, recurring: 5, susuPlans: 2, invoicesPerMonth: 10, billsPerMonth: 10, aiQuestionsPerMonth: 20 },
+  free: { accounts: 5, budgets: 5, savingsGoals: 3, debts: 5, recurring: 5, susuPlans: 2, invoicesPerMonth: 10, billsPerMonth: 10, aiQuestionsPerMonth: 20, receiptScansPerMonth: 10 },
   // AI questions cost real money per call, so even paid plans have a monthly cap.
-  personal_pro: { ...unlimited, aiQuestionsPerMonth: 300 },
-  business_pro: { ...unlimited, aiQuestionsPerMonth: 600 },
+  personal_pro: { ...unlimited, aiQuestionsPerMonth: 300, receiptScansPerMonth: 200 },
+  business_pro: { ...unlimited, aiQuestionsPerMonth: 600, receiptScansPerMonth: 500 },
 };
 
 const BASE = {
   free: { key: 'free', name: 'Free', workspaceType: null, summary: 'The essentials for tracking your money.' },
-  personal_pro: { key: 'personal_pro', name: 'Personal Pro', workspaceType: 'personal', summary: 'No limits on accounts, budgets, goals, debts, schedules or Susu plans, and 300 AI assistant questions a month.' },
-  business_pro: { key: 'business_pro', name: 'Business Pro', workspaceType: 'business', summary: 'No limits, including unlimited invoices and bills each month, and 600 AI assistant questions a month.' },
+  personal_pro: { key: 'personal_pro', name: 'Personal Pro', workspaceType: 'personal', summary: 'No limits on accounts, budgets, goals, debts, schedules or Susu plans, and 300 AI questions and 200 receipt scans a month.' },
+  business_pro: { key: 'business_pro', name: 'Business Pro', workspaceType: 'business', summary: 'No limits, including unlimited invoices and bills each month, and 600 AI questions and 500 receipt scans a month.' },
 };
 
 function parseLimits(raw) {

@@ -27,7 +27,7 @@ export function LoginPage() {
       subtitle="Pick up where you left off with your budgets and Susu records."
       footer={
         <>
-          New to BudgetFlow?{' '}
+          New to Kontaa?{' '}
           <Link to="/register" className="font-medium text-primary hover:underline">
             Create an account
           </Link>

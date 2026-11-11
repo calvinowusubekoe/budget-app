@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
  * status or period dates, and only after a payment the provider has confirmed.
  * No route lets a user write these fields.
  *
- * BudgetFlow doesn't keep saved cards, so nothing is charged automatically:
+ * Kontaa doesn't keep saved cards, so nothing is charged automatically:
  * a renewal is another verified payment that extends currentPeriodEnd.
  */
 const subscriptionSchema = new mongoose.Schema(

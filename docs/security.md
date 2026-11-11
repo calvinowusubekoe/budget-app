@@ -45,7 +45,7 @@ The suggested fix (`npm audit fix --force`) downgrades `workbox-build` with brea
 
 ## Ghana data protection
 
-BudgetFlow processes personal and financial data of people in Ghana. That falls under the **Data Protection Act, 2012 (Act 843)**, overseen by the **Data Protection Commission (DPC)**. This is a readiness summary, not legal advice. Confirm the obligations with a Ghanaian data-protection adviser.
+Kontaa processes personal and financial data of people in Ghana. That falls under the **Data Protection Act, 2012 (Act 843)**, overseen by the **Data Protection Commission (DPC)**. This is a readiness summary, not legal advice. Confirm the obligations with a Ghanaian data-protection adviser.
 
 **What the product already supports:**
 - **Consent and notice:** terms and privacy acceptance recorded at sign-up, with the version and time. A separate, withdrawable consent for the AI assistant.
@@ -70,8 +70,8 @@ BudgetFlow processes personal and financial data of people in Ghana. That falls 
 - Write a breach-response procedure: who assesses, how affected people and the DPC are told, and within what time.
 - Set the retention period for closed accounts, and implement or document how deletion requests are handled within the required time.
 
-## What BudgetFlow is not
+## What Kontaa is not
 
 - **Not a bank, wallet, payment processor or deposit-taking service.** It holds no Bank of Ghana licence and must not be marketed as one.
 - **Not certified accounting or tax software.** Reports say so.
-- **Subscription payments only.** They are processed by an approved provider, and BudgetFlow never collects or moves anyone else's money, including Susu money.
+- **Subscription payments only.** They are processed by an approved provider, and Kontaa never collects or moves anyone else's money, including Susu money.

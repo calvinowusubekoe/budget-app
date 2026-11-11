@@ -4,7 +4,7 @@ import { ok } from '../../utils/http.js';
 import { handleWebhook } from './payments.service.js';
 
 /**
- * Public provider webhooks for BudgetFlow subscription payments. Mounted
+ * Public provider webhooks for Kontaa subscription payments. Mounted
  * before the JSON parser: the signature is computed over the exact raw bytes.
  * There are no webhooks for Susu and never will be.
  */

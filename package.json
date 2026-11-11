@@ -1,8 +1,8 @@
 {
-  "name": "budgetflow",
+  "name": "kontaa",
   "private": true,
   "version": "0.1.0",
-  "description": "BudgetFlow: multi-currency financial tracking PWA with Personal and Group Susu record-keeping.",
+  "description": "Kontaa: multi-currency financial tracking PWA with Personal and Group Susu record-keeping.",
   "workspaces": [
     "server",
     "client"

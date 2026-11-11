@@ -15,14 +15,14 @@ const idParam = (name) => ({ name, in: 'path', required: true, schema: { type: '
 export const openApiSpec = {
   openapi: '3.1.0',
   info: {
-    title: 'BudgetFlow API',
+    title: 'Kontaa API',
     version: '0.1.0',
     description:
-      'Financial tracking and management API. BudgetFlow records financial information; it does not hold or move money. ' +
+      'Financial tracking and management API. Kontaa records financial information; it does not hold or move money. ' +
       'Workspace-scoped resources take the workspace from the path or the X-Workspace-Id header.',
   },
   servers: [{ url: '/api' }],
-  tags: [{ name: 'Auth' }, { name: 'Users' }, { name: 'Workspaces' }, { name: 'Accounts' }, { name: 'Categories' }, { name: 'Exchange rates' }, { name: 'Transactions' }, { name: 'Budgets' }, { name: 'Savings goals' }, { name: 'Debts' }, { name: 'Recurring' }, { name: 'Notifications' }, { name: 'Group Susu', description: 'Rotating group records: members, cycles, contribution and payout records with confirmations and disputes. Payouts are records of payouts made outside BudgetFlow; no endpoint sends, collects or initiates money. Groups are governed by group membership, not workspaces.' }, { name: 'Personal Susu', description: 'Record-keeping only. BudgetFlow never collects, holds, moves or pays out Susu money, and has no Susu payment endpoints.' }, { name: 'Business', description: 'Business workspaces only. Practical bookkeeping, not certified accounting or tax software. Payments on invoices and bills are recorded as income/expense transactions; BudgetFlow does not collect or pay the money.' }, { name: 'Subscriptions', description: "BudgetFlow's own software plans. The only place BudgetFlow takes money. Plans change only after a payment is verified with the provider by the server; no endpoint lets a user set a plan." }, { name: 'Payment webhooks', description: 'Public, signature-verified provider callbacks for subscription payments only. Each event is re-verified with the provider API and de-duplicated by event id.' }, { name: 'Analytics', description: 'Deterministic server calculations in decimal. Income and spending never include transfers, savings allocations, Susu records or subscription payments; /separated reports those apart.' }, { name: 'AI assistant', description: 'Optional and read-only. Needs AI_PROVIDER=anthropic, a per-user consent, and the workspace switch on. The model receives only server-calculated figures (no payees, descriptions or notes), has no tools, and every money-like figure in its answer that is not in those figures is listed as unverified. Question and answer text are not stored.' }, { name: 'Meta' }],
+  tags: [{ name: 'Auth' }, { name: 'Users' }, { name: 'Workspaces' }, { name: 'Accounts' }, { name: 'Categories' }, { name: 'Exchange rates' }, { name: 'Transactions' }, { name: 'Budgets' }, { name: 'Savings goals' }, { name: 'Debts' }, { name: 'Recurring' }, { name: 'Notifications' }, { name: 'Group Susu', description: 'Rotating group records: members, cycles, contribution and payout records with confirmations and disputes. Payouts are records of payouts made outside Kontaa; no endpoint sends, collects or initiates money. Groups are governed by group membership, not workspaces.' }, { name: 'Personal Susu', description: 'Record-keeping only. Kontaa never collects, holds, moves or pays out Susu money, and has no Susu payment endpoints.' }, { name: 'Business', description: 'Business workspaces only. Practical bookkeeping, not certified accounting or tax software. Payments on invoices and bills are recorded as income/expense transactions; Kontaa does not collect or pay the money.' }, { name: 'Subscriptions', description: "Kontaa's own software plans. The only place Kontaa takes money. Plans change only after a payment is verified with the provider by the server; no endpoint lets a user set a plan." }, { name: 'Payment webhooks', description: 'Public, signature-verified provider callbacks for subscription payments only. Each event is re-verified with the provider API and de-duplicated by event id.' }, { name: 'Analytics', description: 'Deterministic server calculations in decimal. Income and spending never include transfers, savings allocations, Susu records or subscription payments; /separated reports those apart.' }, { name: 'AI assistant', description: 'Optional and read-only. Needs AI_PROVIDER=anthropic, a per-user consent, and the workspace switch on. The model receives only server-calculated figures (no payees, descriptions or notes), has no tools, and every money-like figure in its answer that is not in those figures is listed as unverified. Question and answer text are not stored.' }, { name: 'Meta' }],
   components: {
     securitySchemes: {
       bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
@@ -273,7 +273,7 @@ export const openApiSpec = {
         responses: { 200: { description: 'Updated' }, ...errors },
       },
     },
-    '/users/me/export': { get: { tags: ['Users'], summary: 'Download profile data held by BudgetFlow', security: secured, responses: { 200: { description: 'JSON export' } } } },
+    '/users/me/export': { get: { tags: ['Users'], summary: 'Download profile data held by Kontaa', security: secured, responses: { 200: { description: 'JSON export' } } } },
 
     '/workspaces': {
       get: { tags: ['Workspaces'], summary: 'Workspaces the user belongs to', security: secured, responses: { 200: envelope({ type: 'array', items: ref('Workspace') }) } },
@@ -523,7 +523,7 @@ export const openApiSpec = {
     '/susu/plans/{planId}/contributions': {
       parameters: [wsHeader, idParam('planId')],
       get: { tags: ['Personal Susu'], summary: 'Contribution history', security: secured, responses: { 200: { description: 'OK' } } },
-      post: { tags: ['Personal Susu'], summary: 'Record a contribution made outside BudgetFlow', security: secured, requestBody: json({ type: 'object', required: ['amount', 'date'], properties: { amount: ref('Money'), date: { type: 'string', format: 'date' }, notes: { type: 'string' } } }), responses: { 201: { description: 'Recorded' }, ...errors } },
+      post: { tags: ['Personal Susu'], summary: 'Record a contribution made outside Kontaa', security: secured, requestBody: json({ type: 'object', required: ['amount', 'date'], properties: { amount: ref('Money'), date: { type: 'string', format: 'date' }, notes: { type: 'string' } } }), responses: { 201: { description: 'Recorded' }, ...errors } },
     },
     '/susu/plans/{planId}/contributions/{entryId}/cancel': { parameters: [wsHeader, idParam('planId'), idParam('entryId')], post: { tags: ['Personal Susu'], summary: 'Cancel a contribution with a reason (entries are never edited or deleted)', security: secured, responses: { 200: { description: 'Cancelled' }, 409: { description: 'Would leave the plan below zero' } } } },
     '/susu/plans/{planId}/contributions/{entryId}/attachment': {
@@ -576,13 +576,13 @@ export const openApiSpec = {
       post: { tags: ['Group Susu'], summary: 'Generate cycles for everyone without a turn ({generate: true}), or add one cycle', security: secured, responses: { 201: { description: 'Created' } } },
     },
     '/susu/groups/{groupId}/cycles/{cycleId}': { parameters: [idParam('groupId'), idParam('cycleId')], patch: { tags: ['Group Susu'], summary: 'Change date, recipient or contributors, or cancel; a reason is required', security: secured, responses: { 200: { description: 'OK' }, 409: { description: 'Payout already recorded' } } } },
-    '/susu/groups/{groupId}/cycles/{cycleId}/contributions': { parameters: [idParam('groupId'), idParam('cycleId')], post: { tags: ['Group Susu'], summary: 'Record a contribution a member made outside BudgetFlow', security: secured, requestBody: json({ type: 'object', required: ['memberId', 'amount', 'date'], properties: { memberId: { type: 'string' }, amount: ref('Money'), date: { type: 'string', format: 'date' }, notes: { type: 'string' } } }), responses: { 201: { description: 'Recorded' } } } },
+    '/susu/groups/{groupId}/cycles/{cycleId}/contributions': { parameters: [idParam('groupId'), idParam('cycleId')], post: { tags: ['Group Susu'], summary: 'Record a contribution a member made outside Kontaa', security: secured, requestBody: json({ type: 'object', required: ['memberId', 'amount', 'date'], properties: { memberId: { type: 'string' }, amount: ref('Money'), date: { type: 'string', format: 'date' }, notes: { type: 'string' } } }), responses: { 201: { description: 'Recorded' } } } },
     '/susu/groups/{groupId}/contributions': { parameters: [idParam('groupId')], get: { tags: ['Group Susu'], summary: 'Contribution records (members see only their own)', security: secured, parameters: q(['cycleId', 'memberId', 'status']), responses: { 200: { description: 'OK' } } } },
     '/susu/groups/{groupId}/contributions/{recordId}': {
       parameters: [idParam('groupId'), idParam('recordId')],
       patch: { tags: ['Group Susu'], summary: 'confirm / dispute (the member it is about), cancel (organisers, with reason) or correct (organisers, before confirmation)', security: secured, requestBody: json({ type: 'object', properties: { action: { enum: ['confirm', 'dispute', 'cancel', 'correct'] }, reason: { type: 'string' }, amount: ref('Money'), date: { type: 'string', format: 'date' }, notes: { type: 'string' } } }), responses: { 200: { description: 'OK' }, 403: { description: 'Not allowed' }, 409: { description: 'Confirmed and locked' } } },
     },
-    '/susu/groups/{groupId}/cycles/{cycleId}/payouts': { parameters: [idParam('groupId'), idParam('cycleId')], post: { tags: ['Group Susu'], summary: 'Record a payout that was made outside BudgetFlow (one per cycle)', security: secured, requestBody: json({ type: 'object', required: ['actualAmount', 'payoutDate'], properties: { actualAmount: ref('Money'), payoutDate: { type: 'string', format: 'date' }, confirmationDetails: { type: 'string' }, notes: { type: 'string' } } }), responses: { 201: { description: 'Recorded' }, 409: { description: 'Already recorded' } } } },
+    '/susu/groups/{groupId}/cycles/{cycleId}/payouts': { parameters: [idParam('groupId'), idParam('cycleId')], post: { tags: ['Group Susu'], summary: 'Record a payout that was made outside Kontaa (one per cycle)', security: secured, requestBody: json({ type: 'object', required: ['actualAmount', 'payoutDate'], properties: { actualAmount: ref('Money'), payoutDate: { type: 'string', format: 'date' }, confirmationDetails: { type: 'string' }, notes: { type: 'string' } } }), responses: { 201: { description: 'Recorded' }, 409: { description: 'Already recorded' } } } },
     '/susu/groups/{groupId}/payouts': { parameters: [idParam('groupId')], get: { tags: ['Group Susu'], summary: 'Payout records (visible to all members)', security: secured, responses: { 200: { description: 'OK' } } } },
     '/susu/groups/{groupId}/payouts/{recordId}': { parameters: [idParam('groupId'), idParam('recordId')], patch: { tags: ['Group Susu'], summary: 'confirm / dispute (the recipient), cancel or correct (organisers)', security: secured, responses: { 200: { description: 'OK' } } } },
     '/susu/groups/{groupId}/reports': { parameters: [idParam('groupId')], get: { tags: ['Group Susu'], summary: 'Outstanding contributions by cycle and member, rotation and disputes', security: secured, responses: { 200: { description: 'OK' } } } },
@@ -677,6 +677,26 @@ export const openApiSpec = {
         requestBody: { required: true, ...json({ type: 'object', required: ['question'], properties: { question: { type: 'string', maxLength: 1000 }, history: { type: 'array', maxItems: 8, items: { type: 'object', properties: { role: { enum: ['user', 'assistant'] }, content: { type: 'string' } } } }, from: { type: 'string', format: 'date' }, to: { type: 'string', format: 'date' } } }) },
         responses: { 200: { description: 'answer, disclaimer, unverifiedFigures' }, 403: { description: 'Consent required, switched off, or plan limit' }, 409: { description: 'Not configured' }, 503: { description: 'Provider busy or unavailable' }, ...errors },
       },
+    },
+    '/ai/receipts/scan': {
+      parameters: [wsHeader],
+      post: {
+        tags: ['AI assistant'],
+        summary: 'Read a receipt or payment screenshot (JPG, PNG, WebP or PDF, multipart field "file") and suggest a new transaction. Saves nothing; needs AI consent and counts toward the monthly scan allowance',
+        security: secured,
+        requestBody: { required: true, content: { 'multipart/form-data': { schema: { type: 'object', properties: { file: { type: 'string', format: 'binary' } } } } } },
+        responses: { 200: { description: 'draft (validated suggestion), warnings, possibleDuplicates' }, 403: { description: 'Consent required, switched off, or plan limit' }, 409: { description: 'Not configured' }, 415: { description: 'Unsupported file' }, 422: { description: 'Could not be read' } },
+      },
+    },
+    '/susu/groups/{groupId}/contributions/{recordId}/proof': {
+      parameters: [idParam('groupId'), idParam('recordId')],
+      post: { tags: ['Group Susu'], summary: 'Attach a receipt or screenshot of the contribution made outside Kontaa (the member, the recorder or a manager)', security: secured, responses: { 200: { description: 'Record' }, 403: { description: 'Not allowed' } } },
+      get: { tags: ['Group Susu'], summary: 'Download the proof (managers and the member)', security: secured, responses: { 200: { description: 'File' }, 404: { description: 'None or not visible' } } },
+    },
+    '/susu/groups/{groupId}/payouts/{recordId}/proof': {
+      parameters: [idParam('groupId'), idParam('recordId')],
+      post: { tags: ['Group Susu'], summary: 'Attach a receipt or screenshot of the payout made outside Kontaa', security: secured, responses: { 200: { description: 'Record' }, 403: { description: 'Not allowed' } } },
+      get: { tags: ['Group Susu'], summary: 'Download the payout proof (any member)', security: secured, responses: { 200: { description: 'File' } } },
     },
     '/analytics/business': { parameters: [wsHeader], get: { tags: ['Analytics'], summary: 'Business summary for a period (business workspaces)', security: secured, parameters: q(['from', 'to']), responses: { 200: { description: 'OK' } } } },
   },

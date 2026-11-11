@@ -5,7 +5,7 @@ const Dec = mongoose.Schema.Types.Decimal128;
 /**
  * A savings target the user tracks. The amount saved is the sum of entries
  * the user records; the money itself is wherever the user keeps it.
- * BudgetFlow never holds it.
+ * Kontaa never holds it.
  */
 const savingsGoalSchema = new mongoose.Schema(
   {
