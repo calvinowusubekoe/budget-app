@@ -3,14 +3,20 @@
   "private": true,
   "version": "0.1.0",
   "description": "BudgetFlow: multi-currency financial tracking PWA with Personal and Group Susu record-keeping.",
-  "workspaces": ["server", "client"],
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
     "dev": "npm run dev --workspace server & npm run dev --workspace client",
     "dev:server": "npm run dev --workspace server",
     "dev:client": "npm run dev --workspace client",
     "build": "npm run build --workspace client",
     "test": "npm test --workspace server && npm test --workspace client",
-    "lint": "npm run lint --workspace client"
+    "typecheck": "npm run typecheck --workspace client",
+    "start": "npm start --workspace server"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

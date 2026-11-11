@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
+    <meta name="apple-mobile-web-app-title" content="BudgetFlow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#E3E8ED" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1A242B" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="Track income, expenses, budgets, savings and Susu records across currencies." />
+    <title>BudgetFlow</title>
+    <script>
+      // Apply the saved theme before first paint to avoid a flash.
+      try {
+        var t = localStorage.getItem('bf-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // Self-heal: if nothing has rendered 8 s after load, a broken cached version may be stuck
+      // (it can't show the update prompt). Activate a waiting update, or check for one, and reload once.
+      window.addEventListener('load', function () {
+        setTimeout(function () {
+          var root = document.getElementById('root');
+          if (!root || root.childElementCount || !navigator.serviceWorker) return;
+          try {
+            if (sessionStorage.getItem('bf-heal')) return;
+            sessionStorage.setItem('bf-heal', '1');
+          } catch (e) {
+            return;
+          }
+          navigator.serviceWorker.getRegistration().then(function (r) {
+            if (!r) return location.reload();
+            navigator.serviceWorker.addEventListener('controllerchange', function () { location.reload(); });
+            if (r.waiting) r.waiting.postMessage({ type: 'SKIP_WAITING' });
+            else r.update().then(function () { if (r.waiting) r.waiting.postMessage({ type: 'SKIP_WAITING' }); else location.reload(); });
+          });
+        }, 8000);
+      });
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

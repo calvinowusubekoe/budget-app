@@ -13,3 +13,4 @@ export const apiLimiter = rateLimit({ ...base, windowMs: 15 * 60 * 1000, limit: 
 
 /** Credential endpoints: login, register, password reset. */
 export const authLimiter = rateLimit({ ...base, windowMs: 15 * 60 * 1000, limit: 20 });
+export const webhookLimiter = rateLimit({ ...base, windowMs: 60 * 1000, limit: 300 });

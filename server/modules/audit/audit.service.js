@@ -17,9 +17,11 @@ export async function recordAudit({ workspaceId = null, actorId = null, action, 
   });
 }
 
-export async function listAudit(workspaceId, { limit = 50, before } = {}) {
+export async function listAudit(workspaceId, { limit = 50, before, entityType, entityId } = {}) {
   const query = { workspaceId };
   if (before) query.createdAt = { $lt: before };
+  if (entityType) query.entityType = entityType;
+  if (entityId) query.entityId = entityId;
   const rows = await AuditLog.find(query)
     .sort({ createdAt: -1 })
     .limit(limit)

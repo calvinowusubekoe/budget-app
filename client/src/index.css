@@ -1,0 +1,244 @@
+@import '@fontsource-variable/onest';
+@import 'tailwindcss';
+
+/*
+ * BudgetFlow material system
+ *
+ * Two materials, each with one job:
+ *   Glass  — structure. Sidebar, top bar, cards and dialogs float as frosted
+ *            panes over a softly lit haze, so hierarchy reads as depth.
+ *   Neu    — touch. Buttons, inputs, toggles and the balance well are pressed
+ *            out of / into the surface, so what you can act on feels physical.
+ *
+ * Palette: haze (base), lagoon (primary), gold weight (accent),
+ * ink (text), clay rose (danger). Primary actions stay solid lagoon so
+ * contrast never depends on a shadow.
+ */
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+:root {
+  color-scheme: light;
+  --bg: #e3e8ed;
+  --surface: #e6ebf0;
+  /* Chart series: validated for colour-blind separation on --surface (dataviz validator). */
+  --series-1: #00897c;
+  --series-2: #c08a25;
+  --ink: #14212a;
+  --muted: #4b5b66;
+  --subtle: #6b7a85;
+  --primary: #0f6b66;
+  --primary-hover: #0c5a56;
+  --primary-fg: #ffffff;
+  --primary-soft: rgb(15 107 102 / 0.12);
+  --gold: #b8862a;
+  --gold-ink: #7f5b14;
+  --gold-soft: rgb(184 134 42 / 0.14);
+  --danger: #b4483c;
+  --danger-soft: rgb(180 72 60 / 0.12);
+  --success: #2f7d4f;
+  --line: rgb(20 33 42 / 0.08);
+
+  --neu-dark: rgb(150 165 180 / 0.55);
+  --neu-light: rgb(255 255 255 / 0.92);
+  --glass-bg: rgb(255 255 255 / 0.42);
+  --glass-strong: rgb(255 255 255 / 0.62);
+  --glass-border: rgb(255 255 255 / 0.65);
+  --glass-shadow: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 20px 40px -24px rgb(20 33 42 / 0.25);
+  --orb-a: rgb(15 107 102 / 0.32);
+  --orb-b: rgb(184 134 42 / 0.28);
+  --ring: rgb(15 107 102 / 0.55);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #1a242b;
+  --surface: #1d2830;
+  --series-1: #2fa398;
+  --series-2: #b88729;
+  --ink: #e4ecf0;
+  --muted: #a3b4bf;
+  --subtle: #7f929e;
+  --primary: #2fa398;
+  --primary-hover: #39b5a9;
+  --primary-fg: #04201d;
+  --primary-soft: rgb(47 163 152 / 0.16);
+  --gold: #d8a948;
+  --gold-ink: #e7c27a;
+  --gold-soft: rgb(216 169 72 / 0.14);
+  --danger: #e07a6c;
+  --danger-soft: rgb(224 122 108 / 0.14);
+  --success: #6cc08f;
+  --line: rgb(255 255 255 / 0.07);
+
+  --neu-dark: rgb(6 10 13 / 0.6);
+  --neu-light: rgb(255 255 255 / 0.045);
+  --glass-bg: rgb(32 44 52 / 0.48);
+  --glass-strong: rgb(32 44 52 / 0.72);
+  --glass-border: rgb(255 255 255 / 0.08);
+  --glass-shadow: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 24px 48px -24px rgb(0 0 0 / 0.6);
+  --orb-a: rgb(47 163 152 / 0.22);
+  --orb-b: rgb(216 169 72 / 0.14);
+  --ring: rgb(47 163 152 / 0.7);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #1a242b;
+    --surface: #1d2830;
+  --series-1: #2fa398;
+  --series-2: #b88729;
+    --ink: #e4ecf0;
+    --muted: #a3b4bf;
+    --subtle: #7f929e;
+    --primary: #2fa398;
+    --primary-hover: #39b5a9;
+    --primary-fg: #04201d;
+    --primary-soft: rgb(47 163 152 / 0.16);
+    --gold: #d8a948;
+    --gold-ink: #e7c27a;
+    --gold-soft: rgb(216 169 72 / 0.14);
+    --danger: #e07a6c;
+    --danger-soft: rgb(224 122 108 / 0.14);
+    --success: #6cc08f;
+    --line: rgb(255 255 255 / 0.07);
+    --neu-dark: rgb(6 10 13 / 0.6);
+    --neu-light: rgb(255 255 255 / 0.045);
+    --glass-bg: rgb(32 44 52 / 0.48);
+    --glass-strong: rgb(32 44 52 / 0.72);
+    --glass-border: rgb(255 255 255 / 0.08);
+    --glass-shadow: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 24px 48px -24px rgb(0 0 0 / 0.6);
+    --orb-a: rgb(47 163 152 / 0.22);
+    --orb-b: rgb(216 169 72 / 0.14);
+    --ring: rgb(47 163 152 / 0.7);
+  }
+}
+
+@theme inline {
+  --font-sans: 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-soft: var(--primary-soft);
+  --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
+  --color-gold-soft: var(--gold-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-success: var(--success);
+  --color-line: var(--line);
+  --color-ring: var(--ring);
+}
+
+/* ---------- Materials ---------- */
+
+@utility glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+}
+
+@utility glass-strong {
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+}
+
+/* Raised: sits proud of the surface. */
+@utility neu-raised {
+  background: var(--surface);
+  box-shadow:
+    6px 6px 14px var(--neu-dark),
+    -6px -6px 14px var(--neu-light);
+}
+
+@utility neu-raised-sm {
+  background: var(--surface);
+  box-shadow:
+    3px 3px 8px var(--neu-dark),
+    -3px -3px 8px var(--neu-light);
+}
+
+/* Inset: carved into the surface. Used for fields and the balance well. */
+@utility neu-inset {
+  background: var(--surface);
+  box-shadow:
+    inset 3px 3px 7px var(--neu-dark),
+    inset -3px -3px 7px var(--neu-light);
+}
+
+@utility neu-well {
+  background: var(--surface);
+  box-shadow:
+    inset 10px 10px 24px var(--neu-dark),
+    inset -10px -10px 24px var(--neu-light);
+}
+
+/* Pressed: the raised state after a press. */
+@utility neu-pressed {
+  background: var(--surface);
+  box-shadow:
+    inset 2px 2px 5px var(--neu-dark),
+    inset -2px -2px 5px var(--neu-light);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+/* ---------- Base ---------- */
+
+@layer base {
+  html {
+    background: var(--bg);
+    -webkit-text-size-adjust: 100%;
+  }
+  /* html carries the haze; body stays clear so the backdrop light shows through. */
+  body {
+    min-height: 100dvh;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--primary-soft);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Browsers without backdrop-filter get an opaque pane so text stays legible. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass, .glass-strong {
+    background: var(--surface);
+  }
+}

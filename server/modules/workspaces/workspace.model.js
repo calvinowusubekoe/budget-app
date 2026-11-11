@@ -7,6 +7,8 @@ const workspaceSchema = new mongoose.Schema(
     // Reporting currency for this workspace's summaries.
     baseCurrency: { type: String, required: true },
     ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    // Owners and admins can switch the AI assistant off for everyone in the workspace.
+    aiAssistantEnabled: { type: Boolean, default: true },
     status: { type: String, enum: ['active', 'archived'], default: 'active' },
     business: {
       legalName: { type: String, trim: true, maxlength: 160, default: '' },
@@ -26,6 +28,7 @@ workspaceSchema.methods.toPublic = function toPublic() {
     ownerId: this.ownerId.toString(),
     status: this.status,
     business: this.type === 'business' ? this.business : undefined,
+    aiAssistantEnabled: this.aiAssistantEnabled !== false,
     createdAt: this.createdAt,
   };
 };

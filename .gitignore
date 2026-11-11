@@ -7,3 +7,5 @@ coverage/
 *.log
 .DS_Store
 uploads/
+.playwright-mcp/
+server/tests/.uploads/

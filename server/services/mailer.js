@@ -41,6 +41,11 @@ export const emails = {
     subject: 'Reset your BudgetFlow password',
     text: `Hi ${user.name},\n\nUse this link to choose a new password:\n${link(`/reset-password?token=${token}`)}\n\nThis link expires in 1 hour and signs you out of every device. If you did not ask for this, ignore this email; your password stays the same.`,
   }),
+  susuInvite: ({ email, inviterName, groupName, token }) => ({
+    to: email,
+    subject: `${inviterName} added you to the ${groupName} Susu group on BudgetFlow`,
+    text: `${inviterName} added you to ${groupName}, a Susu group whose records are kept on BudgetFlow.\n\nJoin to see the rotation schedule and confirm the contributions and payouts recorded for you:\n${link(`/susu/invitations/accept?token=${token}`)}\n\nBudgetFlow only keeps records. It never collects or pays out Susu money; you keep paying the way your group agrees.\n\nThe invitation expires in 14 days.`,
+  }),
   workspaceInvite: ({ email, inviterName, workspaceName, role, token }) => ({
     to: email,
     subject: `${inviterName} invited you to ${workspaceName} on BudgetFlow`,
