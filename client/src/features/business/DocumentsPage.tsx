@@ -38,7 +38,7 @@ export function DocumentsPage({ kind }: { kind: DocKind }) {
 
       <Card className="p-3 sm:p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
-          <Select aria-label="Status" value={status} onChange={(e) => setStatus(e.target.value)} className="w-48">
+          <Select aria-label="Status" value={status} onChange={(e) => setStatus(e.target.value)} className="w-full sm:w-48">
             <option value="">All</option>
             <option value="unpaid">Unpaid</option>
             <option value="overdue">Overdue</option>
@@ -54,14 +54,37 @@ export function DocumentsPage({ kind }: { kind: DocKind }) {
             {status ? 'Try a different filter.' : isInvoice ? 'Bill a customer for goods or work. You can print it as a PDF and track what’s still owed.' : 'Keep track of what suppliers have billed you and when it’s due.'}
           </EmptyState>
         ) : (
-          <div className="-mx-1 overflow-x-auto">
-            <table className="w-full min-w-[40rem] text-sm">
+          <>
+          <ul className="grid gap-2 sm:hidden">
+            {docs.data.map((d) => (
+              <li key={d.id}>
+                <Link to={`/business/${isInvoice ? 'invoices' : 'bills'}/${d.id}`} className="neu-pressed block rounded-2xl px-4 py-3 text-sm">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="min-w-0 truncate font-medium text-primary">{d.number}</span>
+                    <StatusPill status={d.displayStatus} />
+                  </span>
+                  <span className="mt-1 flex items-end justify-between gap-3">
+                    <span className="min-w-0">
+                      <span className="block truncate">{d.party?.name}</span>
+                      <span className={cn('block text-xs text-subtle', d.displayStatus === 'overdue' && 'text-danger')}>Due {formatYmd(d.dueDate)}{d.daysOverdue > 0 && d.displayStatus === 'overdue' && `, ${d.daysOverdue} days late`}</span>
+                    </span>
+                    <span className="shrink-0 text-right">
+                      <span className="tabular block font-semibold">{d.status === 'issued' ? formatMoney(d.balance, d.currency) : formatMoney(d.total, d.currency)}</span>
+                      <span className="block text-xs text-subtle">{d.status === 'issued' ? 'still owed' : 'total'}</span>
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="-mx-1 hidden overflow-x-auto sm:block">
+            <table className="w-full min-w-160 text-sm">
               <thead className="text-left text-xs text-subtle">
                 <tr><th className="px-2 py-2 font-medium">Number</th><th className="px-2 py-2 font-medium">{isInvoice ? 'Customer' : 'Supplier'}</th><th className="px-2 py-2 font-medium">Due</th><th className="px-2 py-2 text-right font-medium">Total</th><th className="px-2 py-2 text-right font-medium">Still owed</th><th className="px-2 py-2 font-medium">Status</th></tr>
               </thead>
-              <tbody className="divide-y divide-[var(--line)]">
+              <tbody className="divide-y divide-line">
                 {docs.data.map((d) => (
-                  <tr key={d.id} className="hover:bg-[var(--line)]">
+                  <tr key={d.id} className="hover:bg-line">
                     <td className="px-2 py-2.5 font-medium"><Link to={`/business/${isInvoice ? 'invoices' : 'bills'}/${d.id}`} className="text-primary hover:underline">{d.number}</Link>{d.reference && <span className="block text-xs text-subtle">{d.reference}</span>}</td>
                     <td className="px-2 py-2.5">{d.party?.name}</td>
                     <td className={cn('px-2 py-2.5', d.displayStatus === 'overdue' && 'text-danger')}>{formatYmd(d.dueDate)}{d.daysOverdue > 0 && d.displayStatus === 'overdue' && <span className="block text-xs">{d.daysOverdue} days late</span>}</td>
@@ -73,6 +96,7 @@ export function DocumentsPage({ kind }: { kind: DocKind }) {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </Card>
       <DocumentEditor kind={kind} open={open} onOpenChange={setOpen} />

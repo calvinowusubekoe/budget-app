@@ -127,8 +127,8 @@ export function TransactionsPage({ fixedType }: Props) {
       {fixedType && <CategoryBreakdown type={fixedType} accountId={filters.accountId} />}
 
       <Card className="p-4 sm:p-5">
-        <div className="grid gap-3 md:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
-          <div className="relative">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
+          <div className="relative col-span-2 md:col-span-1">
             <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-subtle" aria-hidden />
             <Input aria-label="Search" placeholder="Search description, payee, notes" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
           </div>
@@ -189,7 +189,7 @@ export function TransactionsPage({ fixedType }: Props) {
               </section>
             ))}
             {pages > 1 && (
-              <nav aria-label="Pages" className="flex items-center justify-between border-t border-[var(--line)] px-2 pt-3 text-sm">
+              <nav aria-label="Pages" className="flex items-center justify-between border-t border-line px-2 pt-3 text-sm">
                 <Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Newer</Button>
                 <span className="text-muted">Page {page} of {pages}</span>
                 <Button variant="ghost" size="sm" disabled={page >= pages} onClick={() => setPage((p) => p + 1)}>Older</Button>

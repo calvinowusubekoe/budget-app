@@ -161,12 +161,12 @@ export function AppShell() {
       </aside>
 
       <div className="flex min-w-0 flex-col">
-        <header className="glass sticky top-0 z-30 flex items-center gap-3 rounded-none border-x-0 border-t-0 px-4 py-3 sm:px-6">
+        <header className="glass sticky top-0 z-30 flex items-center gap-2 rounded-none border-x-0 border-t-0 px-4 py-3 sm:px-6">
           <Link to="/" className="lg:hidden" aria-label="Kontaa home">
             <Logo className="[&>span]:hidden sm:[&>span]:inline" />
           </Link>
-          <WorkspaceSwitcher className="max-w-60 lg:hidden" />
-          <div className="ml-auto flex items-center gap-3">
+          <WorkspaceSwitcher className="min-w-0 max-w-60 flex-1 sm:flex-none lg:hidden" />
+          <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-3">
             <ThemeToggle className="hidden sm:inline-flex" />
             {stage === 'test' && <FeedbackButton />}
             <SyncIndicator />

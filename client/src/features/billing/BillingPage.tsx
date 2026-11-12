@@ -117,7 +117,7 @@ function stateLine(c: CurrentPlan) {
 function CurrentPlanPanel({ current, businessWs }: { current: CurrentPlan; businessWs: boolean }) {
   const keys = businessWs ? BUSINESS_LIMITS : PERSONAL_LIMITS;
   return (
-    <section aria-labelledby="plan-title" className="neu-well relative overflow-hidden rounded-[32px] p-6 sm:p-8">
+    <section aria-labelledby="plan-title" className="neu-well relative overflow-hidden rounded-[32px] p-5 sm:p-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-xl">
           <p className="text-sm text-muted">Current plan</p>

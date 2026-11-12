@@ -103,7 +103,7 @@ export function ReportsPage() {
         <Alert tone="danger">{flow.error.message}</Alert>
       ) : (
         <>
-          <section aria-labelledby="sum-title" className="neu-well rounded-[32px] p-6 sm:p-8">
+          <section aria-labelledby="sum-title" className="neu-well rounded-[32px] p-5 sm:p-8">
             <h2 id="sum-title" className="sr-only">Summary</h2>
             <p className="max-w-3xl text-xl leading-relaxed sm:text-2xl">
               From {formatYmd(range.from)} to {formatYmd(range.to)} you received <strong className="tabular-nums text-[var(--series-1)]">{formatMoney(flow.data.totals.income, cur)}</strong> and spent{' '}

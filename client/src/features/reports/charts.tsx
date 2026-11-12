@@ -89,11 +89,11 @@ export function ChartFrame({ title, description, series, table, children, action
 
 export function DataTable({ columns, rows }: { columns: { key: string; label: string; numeric?: boolean }[]; rows: Record<string, string>[] }) {
   return (
-    <table className="w-full min-w-[28rem] text-sm">
+    <table className="w-full min-w-[20rem] text-xs sm:min-w-[28rem] sm:text-sm">
       <thead className="text-left text-muted">
         <tr>
           {columns.map((c) => (
-            <th key={c.key} className={cn('px-2 py-2 font-medium', c.numeric && 'text-right')}>
+            <th key={c.key} className={cn('px-1.5 py-2 font-medium sm:px-2', c.numeric && 'text-right')}>
               {c.label}
             </th>
           ))}
@@ -103,7 +103,7 @@ export function DataTable({ columns, rows }: { columns: { key: string; label: st
         {rows.map((r, i) => (
           <tr key={i} className="border-t border-[var(--line)]">
             {columns.map((c) => (
-              <td key={c.key} className={cn('px-2 py-2', c.numeric && 'text-right tabular-nums')}>
+              <td key={c.key} className={cn('px-1.5 py-2 sm:px-2', c.numeric && 'text-right tabular-nums whitespace-nowrap')}>
                 {r[c.key]}
               </td>
             ))}

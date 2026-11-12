@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Alert, Skeleton } from '@/components/ui/feedback';
-import { cn } from '@/lib/utils';
+import { cn, figureSize } from '@/lib/utils';
 import { formatMoney, formatYmd, isZero, monthRange } from '@/lib/money';
 import { can } from '@/features/workspaces/useWorkspaces';
 import type { Aging, AgingTotals, ProfitLoss } from '@/types/api';
@@ -49,12 +49,12 @@ export function BusinessOverviewPage() {
 
       {overview.error && <Alert tone="danger">{overview.error.message}</Alert>}
 
-      <section aria-labelledby="pl-title" className="neu-well relative overflow-hidden rounded-[32px] p-6 sm:p-8">
+      <section aria-labelledby="pl-title" className="neu-well relative overflow-hidden rounded-[32px] p-5 sm:p-8">
         <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full border-[18px] border-primary/10" />
         <h2 id="pl-title" className="relative text-sm font-medium text-muted">Profit, {month}</h2>
         {!pl ? <Skeleton className="mt-3 h-14 w-64" /> : (
           <div className="relative">
-            <p className={cn('tabular mt-2 text-5xl font-semibold tracking-tight', pl.netProfit.startsWith('-') ? 'text-danger' : 'text-ink')}>{formatMoney(pl.netProfit, pl.currency)}</p>
+            <p className={cn('tabular mt-2 font-semibold tracking-tight whitespace-nowrap', figureSize(formatMoney(pl.netProfit, pl.currency)), pl.netProfit.startsWith('-') ? 'text-danger' : 'text-ink')}>{formatMoney(pl.netProfit, pl.currency)}</p>
             <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-sm">
               <div><dt className="text-muted">Sales received</dt><dd className="tabular font-semibold text-primary">{formatMoney(pl.income.total, pl.currency)}</dd></div>
               <div><dt className="text-muted">Spent</dt><dd className="tabular font-semibold">{formatMoney(pl.expenses.total, pl.currency)}</dd></div>

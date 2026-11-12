@@ -200,6 +200,12 @@
 /* ---------- Base ---------- */
 
 @layer base {
+  /* Grid children may shrink below their content's width. Without this, one wide table or
+     long name stretches the whole page past a phone screen instead of scrolling or
+     truncating inside its own card. */
+  .grid > * {
+    min-width: 0;
+  }
   html {
     background: var(--bg);
     -webkit-text-size-adjust: 100%;

@@ -10,7 +10,7 @@ import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Alert, Badge, EmptyState, Skeleton } from '@/components/ui/feedback';
-import { cn } from '@/lib/utils';
+import { cn, figureSize } from '@/lib/utils';
 import { amountError, cleanAmount, formatMoney, formatYmd, isZero, todayYmd } from '@/lib/money';
 import { apiBlob, ApiError, saveBlob } from '@/services/api';
 import { can } from '@/features/workspaces/useWorkspaces';
@@ -64,7 +64,7 @@ function SavingsWell({ plan: p }: { plan: SusuPlan }) {
       <div className="relative grid gap-5">
         <div>
           <p className="text-sm font-medium text-muted">Recorded savings</p>
-          <p className="tabular mt-1 text-5xl font-semibold tracking-tight">{formatMoney(s.current, p.currency)}</p>
+          <p className={`tabular mt-1 font-semibold tracking-tight whitespace-nowrap ${figureSize(formatMoney(s.current, p.currency))}`}>{formatMoney(s.current, p.currency)}</p>
         </div>
         {s.progress && (
           <div className="max-w-xl">

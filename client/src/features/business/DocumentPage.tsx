@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { Field } from '@/components/ui/field';
 import { Input, Select } from '@/components/ui/input';
 import { Alert, Skeleton } from '@/components/ui/feedback';
-import { cn } from '@/lib/utils';
+import { cn, figureSize } from '@/lib/utils';
 import { amountError, cleanAmount, formatMoney, formatYmd, isZero, todayYmd } from '@/lib/money';
 import { ApiError } from '@/services/api';
 import { can } from '@/features/workspaces/useWorkspaces';
@@ -66,12 +66,20 @@ export function DocumentPage({ kind }: { kind: DocKind }) {
 
       <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
         <Card>
-          <div className="-mx-2 overflow-x-auto">
-            <table className="w-full min-w-[32rem] text-sm">
+          <ul className="divide-y divide-line text-sm sm:hidden">
+            {d.lines.map((l, i) => (
+              <li key={i} className="py-2.5">
+                <span className="flex justify-between gap-3"><span className="min-w-0">{l.description}</span><span className="tabular shrink-0 font-medium">{formatMoney(l.amount, d.currency)}</span></span>
+                <span className="tabular block text-xs text-subtle">{l.quantity} × {formatMoney(l.unitPrice, d.currency)}{l.taxRate ? `, tax ${l.taxRate}%` : ''}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="-mx-2 hidden overflow-x-auto sm:block">
+            <table className="w-full min-w-lg text-sm">
               <thead className="text-left text-xs text-subtle">
                 <tr><th className="px-2 py-2 font-medium">Item</th><th className="px-2 py-2 text-right font-medium">Qty</th><th className="px-2 py-2 text-right font-medium">Unit price</th><th className="px-2 py-2 text-right font-medium">Tax</th><th className="px-2 py-2 text-right font-medium">Amount</th></tr>
               </thead>
-              <tbody className="divide-y divide-[var(--line)]">
+              <tbody className="divide-y divide-line">
                 {d.lines.map((l, i) => (
                   <tr key={i}>
                     <td className="px-2 py-2.5">{l.description}</td>
@@ -87,7 +95,7 @@ export function DocumentPage({ kind }: { kind: DocKind }) {
           <dl className="mt-4 ml-auto grid w-full max-w-xs gap-1 text-sm">
             <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd className="tabular">{formatMoney(d.subtotal, d.currency)}</dd></div>
             <div className="flex justify-between"><dt className="text-muted">Tax</dt><dd className="tabular">{formatMoney(d.taxTotal, d.currency)}</dd></div>
-            <div className="flex justify-between border-t border-[var(--line)] pt-1 font-semibold"><dt>Total</dt><dd className="tabular">{formatMoney(d.total, d.currency)}</dd></div>
+            <div className="flex justify-between border-t border-line pt-1 font-semibold"><dt>Total</dt><dd className="tabular">{formatMoney(d.total, d.currency)}</dd></div>
           </dl>
           {(d.terms || d.notes) && (
             <div className="mt-4 grid gap-2 text-sm">
@@ -98,9 +106,9 @@ export function DocumentPage({ kind }: { kind: DocKind }) {
         </Card>
 
         <div className="grid content-start gap-6">
-          <section aria-label="Balance" className="neu-well rounded-[28px] p-6">
+          <section aria-label="Balance" className="neu-well rounded-[28px] p-5 sm:p-6">
             <p className="text-sm text-muted">{isInvoice ? 'Still owed to you' : 'Still to pay'}</p>
-            <p className={cn('tabular mt-1 text-4xl font-semibold tracking-tight', d.displayStatus === 'overdue' && 'text-danger')}>{formatMoney(d.status === 'void' ? '0' : d.balance, d.currency)}</p>
+            <p className={cn('tabular mt-1 font-semibold tracking-tight whitespace-nowrap', figureSize(formatMoney(d.balance, d.currency), 'lg'), d.displayStatus === 'overdue' && 'text-danger')}>{formatMoney(d.status === 'void' ? '0' : d.balance, d.currency)}</p>
             <p className="mt-2 text-sm text-muted">{formatMoney(d.paid, d.currency)} {isInvoice ? 'received' : 'paid'} of {formatMoney(d.total, d.currency)}{d.displayStatus === 'overdue' ? `. ${d.daysOverdue} days overdue.` : '.'}</p>
           </section>
 
@@ -116,7 +124,7 @@ export function DocumentPage({ kind }: { kind: DocKind }) {
                 {d.payments.map((p) => (
                   <li key={p.id} className={cn('rounded-xl px-3 py-2 text-sm', p.removed ? 'opacity-60' : 'neu-pressed')}>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="min-w-0 flex-1">
+                      <span className="min-w-0 flex-1 basis-full sm:basis-auto">
                         <span className="block text-xs text-subtle">{formatYmd(p.date)}</span>
                         <span className="block truncate" title={p.account.name}>{p.account.name}</span>
                       </span>
@@ -130,8 +138,8 @@ export function DocumentPage({ kind }: { kind: DocKind }) {
                     </div>
                     {p.removed && <p className="text-xs text-subtle">Removed: {p.removeReason}</p>}
                     {removing === p.id && (
-                      <form className="mt-2 flex gap-2" onSubmit={(e) => { e.preventDefault(); m.removePayment.mutate({ id: d.id, paymentId: p.id, reason }, { onSuccess: () => { toast.success('Payment removed'); setRemoving(null); }, onError: onErr }); }}>
-                        <Input aria-label="Reason" placeholder="Why? e.g. cheque bounced" value={reason} onChange={(e) => setReason(e.target.value)} className="h-9 glass shadow-none" autoFocus />
+                      <form className="mt-2 flex flex-wrap gap-2" onSubmit={(e) => { e.preventDefault(); m.removePayment.mutate({ id: d.id, paymentId: p.id, reason }, { onSuccess: () => { toast.success('Payment removed'); setRemoving(null); }, onError: onErr }); }}>
+                        <Input aria-label="Reason" placeholder="Why? e.g. cheque bounced" value={reason} onChange={(e) => setReason(e.target.value)} className="h-9 min-w-0 flex-1 basis-full glass shadow-none sm:basis-auto" autoFocus />
                         <Button size="sm" variant="danger" type="submit" disabled={reason.trim().length < 3} loading={m.removePayment.isPending}>Remove</Button>
                         <Button size="sm" variant="ghost" type="button" onClick={() => setRemoving(null)}>Keep</Button>
                       </form>

@@ -13,13 +13,17 @@ export function DialogContent({ className, children, ...props }: React.Component
       <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[rgb(20_33_42/0.28)] backdrop-blur-[3px] data-[state=open]:animate-in" />
       <DialogPrimitive.Content
         className={cn(
-          'glass-strong fixed top-1/2 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-3xl p-6 focus:outline-none',
+          // Phones: a sheet from the bottom edge, full width, scrolling inside, clear of the home bar.
+          'glass-strong fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-3xl rounded-b-none p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] focus:outline-none',
+          // Larger screens: centred card.
+          'sm:inset-x-auto sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:w-[calc(100vw-2rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-3xl sm:p-6',
           className,
         )}
         {...props}
       >
+        <span aria-hidden className="mx-auto -mt-1 mb-3 block h-1 w-10 rounded-full bg-[var(--line)] sm:hidden" />
         {children}
-        <DialogPrimitive.Close className="absolute top-4 right-4 rounded-lg p-1.5 text-muted hover:text-ink" aria-label="Close">
+        <DialogPrimitive.Close className="absolute top-3 right-3 grid size-9 place-items-center rounded-lg text-muted hover:text-ink sm:top-4 sm:right-4 sm:size-8" aria-label="Close">
           <X className="size-4" />
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>

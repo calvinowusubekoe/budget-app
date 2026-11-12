@@ -6,7 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, EmptyState, Skeleton } from '@/components/ui/feedback';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, figureSize } from '@/lib/utils';
 import { formatMoney, isZero, monthRange } from '@/lib/money';
 import { api } from '@/services/api';
 import { useAuth } from '@/stores/auth';
@@ -34,7 +34,7 @@ function BalanceWell({ summary, writable, onRecord, empty }: { summary?: Summary
   const net = summary?.net ?? '0';
   const negative = net.startsWith('-');
   return (
-    <section aria-labelledby="well-title" className="neu-well relative overflow-hidden rounded-4xl p-6 sm:p-8">
+    <section aria-labelledby="well-title" className="neu-well relative overflow-hidden rounded-4xl p-5 sm:p-8">
       <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full border-18 border-gold/15" />
       <div className="relative flex flex-wrap items-end justify-between gap-6">
         <div className="min-w-0">
@@ -42,7 +42,7 @@ function BalanceWell({ summary, writable, onRecord, empty }: { summary?: Summary
           {!summary ? (
             <Skeleton className="mt-3 h-14 w-64" />
           ) : (
-            <p className={cn('tabular mt-2 text-5xl font-semibold tracking-tight sm:text-6xl', negative ? 'text-danger' : isZero(net) ? 'text-subtle' : 'text-ink')}>
+            <p className={cn('tabular mt-2 font-semibold tracking-tight whitespace-nowrap', figureSize(formatMoney(net, cur, { sign: negative ? '-' : '+' })), negative ? 'text-danger' : isZero(net) ? 'text-subtle' : 'text-ink')}>
               {formatMoney(net, cur, { sign: negative ? '-' : isZero(net) ? undefined : '+' })}
             </p>
           )}
@@ -188,22 +188,26 @@ export function DashboardPage() {
       <Card>
         <CardHeader>
           <div>
-            <CardTitle>Coming next</CardTitle>
-            <CardDescription>Being built in this order.</CardDescription>
+            <CardTitle>More in Kontaa</CardTitle>
+            <CardDescription>Go further with your records.</CardDescription>
           </div>
           {isBusiness && can(workspace, 'invitations.manage') && (
             <Button asChild size="sm" variant="neu"><Link to="/settings/workspace"><UsersRound /> Invite your team</Link></Button>
           )}
         </CardHeader>
-        <ul className="grid gap-4 sm:grid-cols-3">
+        <ul className="grid gap-2 sm:grid-cols-3 sm:gap-4">
           {[
-            { icon: Target, title: 'Business tools', body: 'Customers, suppliers, invoices, bills and profit and loss.' },
-            { icon: CreditCard, title: 'Subscriptions', body: 'Paid Kontaa plans, billed securely by an approved provider.' },
-            { icon: PiggyBank, title: 'Reports and AI', body: 'Charts, period reports and an optional assistant that explains your numbers.' },
-          ].map(({ icon: Icon, title, body }) => (
-            <li key={title} className="flex gap-3">
-              <span className="neu-raised-sm grid size-9 shrink-0 place-items-center rounded-xl text-primary"><Icon className="size-4" aria-hidden /></span>
-              <span><span className="block text-sm font-medium">{title}</span><span className="block text-sm text-muted">{body}</span></span>
+            { icon: CreditCard, to: '/reports', title: 'Reports', body: 'Income, spending and savings by month, quarter or year.' },
+            { icon: Target, to: '/assistant', title: 'AI Assistant', body: 'Ask about your spending, budgets and Susu in plain words.' },
+            isBusiness
+              ? { icon: PiggyBank, to: '/business/invoices', title: 'Invoices', body: 'Bill customers and see what is still owed.' }
+              : { icon: PiggyBank, to: '/susu', title: 'Susu', body: 'Keep personal and group Susu records in one place.' },
+          ].map(({ icon: Icon, to, title, body }) => (
+            <li key={title}>
+              <Link to={to} className="flex gap-3 rounded-2xl p-2 transition hover:bg-line sm:p-0 sm:hover:bg-transparent">
+                <span className="neu-raised-sm grid size-9 shrink-0 place-items-center rounded-xl text-primary"><Icon className="size-4" aria-hidden /></span>
+                <span><span className="block text-sm font-medium">{title}</span><span className="block text-sm text-muted">{body}</span></span>
+              </Link>
             </li>
           ))}
         </ul>
@@ -270,10 +274,10 @@ function PlanningCard({ d }: { d: import('@/types/api').Dashboard }) {
             </Link>
           ))}
           {d.susu.map((s) => (
-            <Link key={`su-${s.currency}`} to="/susu" className="flex items-center justify-between rounded-xl px-1 py-1 hover:bg-line">
-              <dt className="flex items-center gap-2 text-muted">
-                <Coins className="size-4" /> Susu recorded ({s.plans} plan{s.plans === 1 ? '' : 's'})
-                {s.missed > 0 && <span className="text-danger">({s.missed} missed)</span>}
+            <Link key={`su-${s.currency}`} to="/susu" className="flex items-center justify-between gap-3 rounded-xl px-1 py-1 hover:bg-line">
+              <dt className="flex min-w-0 items-start gap-2 text-muted">
+                <Coins className="mt-0.5 size-4 shrink-0" />
+                <span>Susu recorded ({s.plans} plan{s.plans === 1 ? '' : 's'}){s.missed > 0 && <span className="block text-xs text-danger sm:ml-1 sm:inline sm:text-sm">{s.missed} missed</span>}</span>
               </dt>
               <dd className="tabular font-semibold text-gold-ink">{formatMoney(s.current, s.currency)}</dd>
             </Link>
